@@ -14,6 +14,10 @@ app.use(express.static(path.join(__dirname, "public")));
 const movieRoutes = require("./routes/movies");
 app.use("/api/movies", movieRoutes);
 
+const MovieRepository = require("./movieRepository");
+const movieRepo = new MovieRepository(); //containing detailed movies.db file
+app.locals.movieRepo = movieRepo;
+
 // start server
 app.listen(PORT, () => {
   console.log(`Server listening at http://localhost:${PORT}`);

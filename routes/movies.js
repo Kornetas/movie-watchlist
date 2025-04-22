@@ -4,15 +4,18 @@ const router = express.Router();
 // post api/movies - recive mowie title from fronted
 router.post("/", (req, res) => {
   const title = req.body.title;
-
   if (!title) {
     return res.status(400).send("Title is required");
   }
 
-  //na razie tylko logujemt, bez bazy danych
-  console.log("New movie added:", title);
+  const result = req.app.locals.movieRepo.add(title);
+  res.status(201).json({ message: "Movie saved", id: result.lastInsertRowid });
+});
 
-  res.status(201).json({ message: "OK", title });
+// get /api/movies
+router.get("/", (req, res) => {
+  const movies = req.app.locals.movieRepo.getAll();
+  res.json(movies);
 });
 
 module.exports = router;
