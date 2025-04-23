@@ -13,6 +13,10 @@ document.addEventListener("DOMContentLoaded", () => {
       langBtn: "EN",
       duplicateMovie: "Film o tej nazwie już jest na Twojej liście.",
       errorAdd: "Wystąpił błąd przy dodawaniu filmu.",
+      searchCleared: "Wyszukiwanie zostało anulowane.",
+      emptySearch: "Wpisz tytuł, aby wyszukać film.",
+      emptyManual: "Wpisz tytuł, aby dodać film.",
+      clearBtn: "Wyczyść",
     },
     en: {
       title: "Movie Watchlist",
@@ -26,6 +30,10 @@ document.addEventListener("DOMContentLoaded", () => {
       langBtn: "PL",
       duplicateMovie: "A movie with this title is already on your list.",
       errorAdd: "Something went wrong while adding the movie.",
+      searchCleared: "Search has been cleared.",
+      emptySearch: "Enter a movie title to search.",
+      emptyManual: "Enter a movie title to add.",
+      clearBtn: "Clear",
     },
   };
 
@@ -52,6 +60,12 @@ document.addEventListener("DOMContentLoaded", () => {
     if (e.key === "Enter") {
       document.getElementById("searchBtn").click();
     }
+  });
+
+  document.getElementById("clearSearchBtn").addEventListener("click", () => {
+    document.getElementById("searchQuery").value = "";
+    document.getElementById("searchResults").innerHTML = "";
+    showMessage(texts[languageManager.getCurrent()].searchCleared, "info");
   });
 
   // manage language settings
@@ -89,6 +103,9 @@ document.addEventListener("DOMContentLoaded", () => {
       btn.textContent = texts[languageManager.getCurrent()].removeBtn;
     });
 
+    document.getElementById("clearSearchBtn").textContent =
+      texts[languageManager.getCurrent()].clearBtn;
+
     document.querySelector("h1").textContent = t.title;
     document.getElementById("searchQuery").placeholder = t.searchPlaceholder;
     document.getElementById("searchBtn").textContent = t.searchBtn;
@@ -121,7 +138,10 @@ document.addEventListener("DOMContentLoaded", () => {
   // search movies via TMDB
   document.getElementById("searchBtn").addEventListener("click", () => {
     const query = document.getElementById("searchQuery").value.trim();
-    if (!query) return;
+    if (!query) {
+      showMessage(texts[languageManager.getCurrent()].emptySearch, "warning");
+      return;
+    }
 
     const lang = languageManager.getCurrent() === "pl" ? "pl-PL" : "en-US";
 
@@ -176,7 +196,10 @@ document.addEventListener("DOMContentLoaded", () => {
   // add movie manually
   document.getElementById("addManualBtn").addEventListener("click", () => {
     const title = document.getElementById("manualTitle").value.trim();
-    if (!title) return;
+    if (!title) {
+      showMessage(texts[languageManager.getCurrent()].emptyManual, "warning");
+      return;
+    }
 
     fetch("/api/movies", {
       method: "POST",
