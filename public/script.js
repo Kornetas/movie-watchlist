@@ -1,5 +1,31 @@
 document.addEventListener("DOMContentLoaded", () => {
-  // handle language settings
+  // translations for both languages
+  const texts = {
+    pl: {
+      title: "Lista filmów",
+      searchPlaceholder: "Szukaj filmu w TMDB",
+      searchBtn: "Szukaj",
+      addPlaceholder: "Dodaj film ręcznie",
+      addBtn: "Dodaj",
+      removeBtn: "Usuń",
+      watched: "Obejrzane",
+      unwatched: "Nieobejrzane",
+      langBtn: "EN",
+    },
+    en: {
+      title: "Movie Watchlist",
+      searchPlaceholder: "Search TMDB for a movie",
+      searchBtn: "Search",
+      addPlaceholder: "Add a movie manually",
+      addBtn: "Add",
+      removeBtn: "Remove",
+      watched: "Watched",
+      unwatched: "Unwatched",
+      langBtn: "PL",
+    },
+  };
+
+  // manage language settings
   class LanguageManager {
     constructor() {
       this.lang = localStorage.getItem("lang") || "pl";
@@ -18,19 +44,35 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const languageManager = new LanguageManager();
 
-  // when you click language switcher
+  // switch language
   document.getElementById("langToggle").addEventListener("click", () => {
     languageManager.toggle();
+    applyLanguage();
   });
 
-  // when you click search button (TMDB search)
+  // update all visible texts on the page
+  function applyLanguage() {
+    const lang = languageManager.getCurrent();
+    const t = texts[lang];
+
+    document.querySelector("h1").textContent = t.title;
+    document.getElementById("searchQuery").placeholder = t.searchPlaceholder;
+    document.getElementById("searchBtn").textContent = t.searchBtn;
+    document.getElementById("manualTitle").placeholder = t.addPlaceholder;
+    document.getElementById("addManualBtn").textContent = t.addBtn;
+    document.getElementById("langToggle").textContent = t.langBtn;
+
+    updateStats(); // re-apply stats labels
+    updateSearchResults(); // update "Add" buttons in search results
+  }
+
+  // search movies via TMDB
   document.getElementById("searchBtn").addEventListener("click", () => {
     const query = document.getElementById("searchQuery").value.trim();
     if (!query) return;
 
     const lang = languageManager.getCurrent() === "pl" ? "pl-PL" : "en-US";
 
-    // ask our backend to call TMDB with this query
     fetch(`/api/search?query=${encodeURIComponent(query)}&lang=${lang}`)
       .then((res) => res.json())
       .then((results) => {
@@ -42,25 +84,23 @@ document.addEventListener("DOMContentLoaded", () => {
           li.className =
             "list-group-item d-flex justify-content-between align-items-center";
           li.textContent = movie.title;
+
           if (movie.release_date) {
             li.textContent += ` (${movie.release_date.substring(0, 4)})`;
           }
 
           const addBtn = document.createElement("button");
           addBtn.className = "btn btn-sm btn-primary";
-          addBtn.textContent =
-            languageManager.getCurrent() === "pl" ? "Dodaj" : "Add";
+          addBtn.textContent = texts[languageManager.getCurrent()].addBtn;
 
           addBtn.onclick = () => {
             fetch("/api/movies", {
               method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
+              headers: { "Content-Type": "application/json" },
               body: JSON.stringify({ title: movie.title }),
             }).then(() => {
-              loadMovies(); // refresh movie list
-              resultsList.innerHTML = ""; // clear search results
+              loadMovies();
+              resultsList.innerHTML = "";
             });
           };
 
@@ -70,29 +110,45 @@ document.addEventListener("DOMContentLoaded", () => {
       });
   });
 
-  // when you click manual add
+  // add movie manually
   document.getElementById("addManualBtn").addEventListener("click", () => {
     const title = document.getElementById("manualTitle").value.trim();
     if (!title) return;
 
     fetch("/api/movies", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ title }),
     })
       .then((res) => {
         if (!res.ok) throw new Error("Failed to add movie");
         console.log("Movie added successfully:", title);
-        loadMovies(); // update the list
+        loadMovies();
       })
       .catch((err) => {
         console.error("Error adding movie:", err);
       });
   });
 
-  // load and render all movies from backend
+  // update stats labels (called from loadMovies + applyLanguage)
+  function updateStats(w = 0, u = 0) {
+    const t = texts[languageManager.getCurrent()];
+    document.getElementById("watchedCount").textContent = `${t.watched}: ${w}`;
+    document.getElementById(
+      "unwatchedCount"
+    ).textContent = `${t.unwatched}: ${u}`;
+  }
+
+  // update "Add" buttons in TMDB search results after lang switch
+  function updateSearchResults() {
+    const btns = document.querySelectorAll("#searchResults button");
+    const label = texts[languageManager.getCurrent()].addBtn;
+    btns.forEach((btn) => {
+      btn.textContent = label;
+    });
+  }
+
+  // load movie list from backend and display
   function loadMovies() {
     fetch("/api/movies")
       .then((res) => res.json())
@@ -115,7 +171,6 @@ document.addEventListener("DOMContentLoaded", () => {
           checkbox.className = "form-check-input me-2";
           checkbox.checked = !!movie.watched;
 
-          // toggle watched status
           checkbox.onchange = () => {
             fetch(`/api/movies/${movie.id}`, {
               method: "PUT",
@@ -125,7 +180,7 @@ document.addEventListener("DOMContentLoaded", () => {
           };
 
           const removeBtn = document.createElement("button");
-          removeBtn.textContent = "Usuń";
+          removeBtn.textContent = texts[languageManager.getCurrent()].removeBtn;
           removeBtn.className = "btn btn-sm btn-danger";
           removeBtn.onclick = () => {
             fetch(`/api/movies/${movie.id}`, {
@@ -144,13 +199,11 @@ document.addEventListener("DOMContentLoaded", () => {
           list.appendChild(li);
         });
 
-        document.getElementById("watchedCount").textContent =
-          "Obejrzane: " + watchedCount;
-        document.getElementById("unwatchedCount").textContent =
-          "Nieobejrzane: " + (movies.length - watchedCount);
+        updateStats(watchedCount, movies.length - watchedCount);
       });
   }
 
-  // run it on page load
+  // run on load
   loadMovies();
+  applyLanguage();
 });
