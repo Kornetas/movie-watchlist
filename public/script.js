@@ -10,6 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
       removeBtn: "Usuń",
       watched: "Obejrzane",
       unwatched: "Nieobejrzane",
+      total: "Wszystkie filmy",
       langBtn: "EN",
       duplicateMovie: "Film o tej nazwie już jest na Twojej liście.",
       errorAdd: "Wystąpił błąd przy dodawaniu filmu.",
@@ -27,6 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
       removeBtn: "Remove",
       watched: "Watched",
       unwatched: "Unwatched",
+      total: "All movies",
       langBtn: "PL",
       duplicateMovie: "A movie with this title is already on your list.",
       errorAdd: "Something went wrong while adding the movie.",
@@ -36,6 +38,11 @@ document.addEventListener("DOMContentLoaded", () => {
       clearBtn: "Clear",
     },
   };
+
+  let lastWatched = 0;
+  let lastUnwatched = 0;
+
+  let currentFilter = "all"; // all | watched | unwatched
 
   function showMessage(text, type = "info", timeout = 3000) {
     const box = document.getElementById("messageBox");
@@ -66,6 +73,21 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("searchQuery").value = "";
     document.getElementById("searchResults").innerHTML = "";
     showMessage(texts[languageManager.getCurrent()].searchCleared, "info");
+  });
+
+  document.getElementById("watchedCount").addEventListener("click", () => {
+    currentFilter = "watched";
+    loadMovies();
+  });
+
+  document.getElementById("unwatchedCount").addEventListener("click", () => {
+    currentFilter = "unwatched";
+    loadMovies();
+  });
+
+  document.getElementById("totalCount").addEventListener("click", () => {
+    currentFilter = "all";
+    loadMovies();
   });
 
   // manage language settings
@@ -116,17 +138,23 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("addManualBtn").textContent = t.addBtn;
     document.getElementById("langToggle").textContent = t.langBtn;
 
-    updateStats(); // refresh labels
     updateSearchResults(); // refresh add buttons in search results
+    updateStats(lastWatched, lastUnwatched);
+    loadMovies();
   }
 
   // update stats section
-  function updateStats(w = 0, u = 0) {
+  function updateStats(watched, unwatched) {
     const t = texts[languageManager.getCurrent()];
-    document.getElementById("watchedCount").textContent = `${t.watched}: ${w}`;
+    document.getElementById("totalCount").textContent = `${t.total}: ${
+      watched + unwatched
+    }`;
+    document.getElementById(
+      "watchedCount"
+    ).textContent = `${t.watched}: ${watched}`;
     document.getElementById(
       "unwatchedCount"
-    ).textContent = `${t.unwatched}: ${u}`;
+    ).textContent = `${t.unwatched}: ${unwatched}`;
   }
 
   // update TMDB search results add buttons
@@ -230,9 +258,15 @@ document.addEventListener("DOMContentLoaded", () => {
     const list = document.getElementById("movieList");
     list.innerHTML = "";
 
+    const filteredMovies = movies.filter((movie) => {
+      if (currentFilter === "watched") return movie.watched;
+      if (currentFilter === "unwatched") return !movie.watched;
+      return true;
+    });
+
     let watchedCount = 0;
 
-    movies.forEach((movie) => {
+    filteredMovies.forEach((movie) => {
       const li = document.createElement("li");
       li.className =
         "list-group-item d-flex justify-content-between align-items-center";
@@ -273,7 +307,9 @@ document.addEventListener("DOMContentLoaded", () => {
       list.appendChild(li);
     });
 
-    updateStats(watchedCount, movies.length - watchedCount);
+    const totalWatched = movies.filter((m) => m.watched).length;
+    const totalUnwatched = movies.length - totalWatched;
+    updateStats(totalWatched, totalUnwatched);
   }
 
   // load from backend or from localStorage if offline
