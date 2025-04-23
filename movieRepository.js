@@ -6,11 +6,13 @@ class MovieRepository {
 
     //create table if it doesn't exist
     this.db.exec(`
-        CREATE TABLE IF NOT EXISTS movies (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        title TEXT NOT NULL,
-        watched INTEGER NOT NULL DEFAULT 0
-      )
+  CREATE TABLE IF NOT EXISTS movies (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  title TEXT NOT NULL,
+  watched INTEGER NOT NULL DEFAULT 0,
+  poster TEXT,
+  added_at TEXT
+)
      `);
   }
 
@@ -21,9 +23,13 @@ class MovieRepository {
   }
 
   // add a movie
-  add(title) {
-    const stmt = this.db.prepare("INSERT INTO movies (title) VALUES (?)");
-    return stmt.run(title);
+  add(title, poster = null) {
+    const added_at = new Date().toISOString();
+    const stmt = this.db.prepare(`
+      INSERT INTO movies (title, watched, poster, added_at)
+      VALUES (?, 0, ?, ?)
+    `);
+    return stmt.run(title, poster, added_at);
   }
 
   // get all movies

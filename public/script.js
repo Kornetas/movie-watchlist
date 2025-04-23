@@ -184,23 +184,39 @@ document.addEventListener("DOMContentLoaded", () => {
 
         results.forEach((movie) => {
           const li = document.createElement("li");
-          li.className =
-            "list-group-item d-flex justify-content-between align-items-center";
-          li.textContent = movie.title;
+          li.className = "list-group-item d-flex align-items-center";
 
-          if (movie.release_date) {
-            li.textContent += ` (${movie.release_date.substring(0, 4)})`;
-          }
+          // poster thumbnail
+          const img = document.createElement("img");
+          img.src = movie.poster
+            ? `https://image.tmdb.org/t/p/w154${movie.poster}`
+            : "/img/no-poster.png";
+          img.alt = movie.title;
+          img.className = "me-3";
+          img.style.width = "92px";
+          img.style.height = "138px";
+          img.style.objectFit = "cover";
+          img.style.borderRadius = "4px";
 
+          // title + year
+          const text = document.createElement("div");
+          text.innerText = movie.release_date
+            ? `${movie.title} (${movie.release_date.substring(0, 4)})`
+            : movie.title;
+
+          // add button
           const addBtn = document.createElement("button");
-          addBtn.className = "btn btn-sm btn-primary";
+          addBtn.className = "btn btn-sm btn-primary ms-auto";
           addBtn.textContent = texts[languageManager.getCurrent()].addBtn;
 
           addBtn.onclick = () => {
             fetch("/api/movies", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ title: movie.title }),
+              body: JSON.stringify({
+                title: movie.title,
+                poster: movie.poster,
+              }),
             })
               .then((res) => {
                 if (!res.ok) throw new Error(res.status.toString());
@@ -218,6 +234,8 @@ document.addEventListener("DOMContentLoaded", () => {
               });
           };
 
+          li.appendChild(img);
+          li.appendChild(text);
           li.appendChild(addBtn);
           resultsList.appendChild(li);
         });
@@ -271,9 +289,42 @@ document.addEventListener("DOMContentLoaded", () => {
       li.className =
         "list-group-item d-flex justify-content-between align-items-center";
 
-      const titleSpan = document.createElement("span");
-      titleSpan.textContent = movie.title;
+      // miniaturka (poster)
+      const img = document.createElement("img");
+      img.src = movie.poster
+        ? `https://image.tmdb.org/t/p/w154${movie.poster}`
+        : "/img/no-poster.png";
 
+      img.alt = movie.title;
+      img.className = "me-3";
+      img.style.width = "120px";
+      img.style.height = "180px";
+      img.style.objectFit = "cover";
+      img.style.borderRadius = "6px";
+      img.style.boxShadow = "0 2px 6px rgba(0,0,0,0.2)";
+
+      // tytuł + data dodania
+      const titleSpan = document.createElement("span");
+
+      const titleText = document.createElement("div");
+      titleText.textContent = movie.title;
+
+      const dateText = document.createElement("small");
+      dateText.className = "text-muted d-block";
+      if (movie.added_at) {
+        const date = new Date(movie.added_at);
+        const locale =
+          languageManager.getCurrent() === "pl" ? "pl-PL" : "en-US";
+        dateText.textContent = date.toLocaleString(locale, {
+          dateStyle: "short",
+          timeStyle: "short",
+        });
+      }
+
+      titleSpan.appendChild(titleText);
+      titleSpan.appendChild(dateText);
+
+      // checkbox: obejrzane?
       const checkbox = document.createElement("input");
       checkbox.type = "checkbox";
       checkbox.className = "form-check-input me-2";
@@ -287,6 +338,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }).then(() => loadMovies());
       };
 
+      // przycisk "usuń"
       const removeBtn = document.createElement("button");
       removeBtn.textContent = texts[languageManager.getCurrent()].removeBtn;
       removeBtn.className = "btn btn-sm btn-danger";
@@ -296,20 +348,27 @@ document.addEventListener("DOMContentLoaded", () => {
         }).then(() => loadMovies());
       };
 
+      // styl dla obejrzanych
       if (checkbox.checked) {
         watchedCount++;
-        titleSpan.style.textDecoration = "line-through";
+        titleText.style.textDecoration = "line-through";
       }
 
       li.appendChild(checkbox);
+      li.appendChild(img);
       li.appendChild(titleSpan);
       li.appendChild(removeBtn);
       list.appendChild(li);
     });
 
+    // statystyki
     const totalWatched = movies.filter((m) => m.watched).length;
     const totalUnwatched = movies.length - totalWatched;
     updateStats(totalWatched, totalUnwatched);
+
+    // zapamiętanie statystyk do odświeżenia po zmianie języka
+    lastWatched = totalWatched;
+    lastUnwatched = totalUnwatched;
   }
 
   // load from backend or from localStorage if offline

@@ -3,18 +3,17 @@ const router = express.Router();
 
 // post api/movies - recive mowie title from fronted
 router.post("/", (req, res) => {
-  const title = req.body.title;
+  const { title, poster } = req.body;
+
   if (!title) {
     return res.status(400).send("Title is required");
   }
 
   if (req.app.locals.movieRepo.movieExists(title)) {
-    return res
-      .status(409)
-      .json({ message: "Movie saved", id: result.lastInsertRowid });
+    return res.status(409).json({ message: "Movie already exists" });
   }
 
-  const result = req.app.locals.movieRepo.add(title);
+  const result = req.app.locals.movieRepo.add(title, poster);
   res.status(201).json({ message: "Movie saved", id: result.lastInsertRowid });
 });
 

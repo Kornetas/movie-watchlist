@@ -19,6 +19,7 @@ router.get("/", async (req, res) => {
     const results = data.results.map((movie) => ({
       title: movie.title,
       release_date: movie.release_date,
+      poster: movie.poster_path,
     }));
     res.json(results);
   } catch (err) {
