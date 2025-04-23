@@ -11,6 +11,8 @@ document.addEventListener("DOMContentLoaded", () => {
       watched: "Obejrzane",
       unwatched: "Nieobejrzane",
       langBtn: "EN",
+      duplicateMovie: "Film o tej nazwie już jest na Twojej liście.",
+      errorAdd: "Wystąpił błąd przy dodawaniu filmu.",
     },
     en: {
       title: "Movie Watchlist",
@@ -22,8 +24,35 @@ document.addEventListener("DOMContentLoaded", () => {
       watched: "Watched",
       unwatched: "Unwatched",
       langBtn: "PL",
+      duplicateMovie: "A movie with this title is already on your list.",
+      errorAdd: "Something went wrong while adding the movie.",
     },
   };
+
+  function showMessage(text, type = "info", timeout = 3000) {
+    const box = document.getElementById("messageBox");
+    const content = document.getElementById("messageContent");
+
+    content.className = `alert alert ${type}`;
+    content.textContent = text;
+    box.style.display = "block";
+
+    setTimeout(() => {
+      box.style.display = "none";
+    }, timeout);
+  }
+
+  document.getElementById("manualTitle").addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      document.getElementById("addManualBtn").click();
+    }
+  });
+
+  document.getElementById("searchQuery").addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      document.getElementById("searchBtn").click();
+    }
+  });
 
   // manage language settings
   class LanguageManager {
@@ -54,6 +83,11 @@ document.addEventListener("DOMContentLoaded", () => {
   function applyLanguage() {
     const lang = languageManager.getCurrent();
     const t = texts[lang];
+
+    const removeBtns = document.querySelectorAll("#movieList .btn-danger");
+    removeBtns.forEach((btn) => {
+      btn.textContent = texts[languageManager.getCurrent()].removeBtn;
+    });
 
     document.querySelector("h1").textContent = t.title;
     document.getElementById("searchQuery").placeholder = t.searchPlaceholder;
@@ -116,10 +150,21 @@ document.addEventListener("DOMContentLoaded", () => {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({ title: movie.title }),
-            }).then(() => {
-              loadMovies();
-              resultsList.innerHTML = "";
-            });
+            })
+              .then((res) => {
+                if (!res.ok) throw new Error(res.status.toString());
+                loadMovies();
+                resultsList.innerHTML = "";
+              })
+              .catch((err) => {
+                const t = texts[languageManager.getCurrent()];
+                if (err.message === "409") {
+                  showMessage(t.duplicateMovie, "warning");
+                } else {
+                  showMessage(t.errorAdd, "danger");
+                  console.error("Error adding movie:", err);
+                }
+              });
           };
 
           li.appendChild(addBtn);
@@ -144,7 +189,13 @@ document.addEventListener("DOMContentLoaded", () => {
         loadMovies();
       })
       .catch((err) => {
-        console.error("Error adding movie:", err);
+        const t = texts[languageManager.getCurrent()];
+        if (err.message === "409") {
+          showMessage(t.duplicateMovie, "warning");
+        } else {
+          showMessage(t.errorAdd, "danger");
+          console.error("Error adding movie:", err);
+        }
       });
   });
 

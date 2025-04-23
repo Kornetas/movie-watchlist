@@ -14,6 +14,12 @@ class MovieRepository {
      `);
   }
 
+  // quick existence check for a movie by title
+  movieExists(title) {
+    const stmt = this.db.prepare("SELECT 1 FROM movies WHERE title = ?");
+    return !!stmt.get(title);
+  }
+
   // add a movie
   add(title) {
     const stmt = this.db.prepare("INSERT INTO movies (title) VALUES (?)");

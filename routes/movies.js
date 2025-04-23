@@ -8,6 +8,12 @@ router.post("/", (req, res) => {
     return res.status(400).send("Title is required");
   }
 
+  if (req.app.locals.movieRepo.movieExists(title)) {
+    return res
+      .status(409)
+      .json({ message: "Movie saved", id: result.lastInsertRowid });
+  }
+
   const result = req.app.locals.movieRepo.add(title);
   res.status(201).json({ message: "Movie saved", id: result.lastInsertRowid });
 });
