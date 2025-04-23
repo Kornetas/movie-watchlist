@@ -106,6 +106,9 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("clearSearchBtn").textContent =
       texts[languageManager.getCurrent()].clearBtn;
 
+    document.title = t.title;
+    document.getElementById("pageTitle").textContent = t.title;
+
     document.querySelector("h1").textContent = t.title;
     document.getElementById("searchQuery").placeholder = t.searchPlaceholder;
     document.getElementById("searchBtn").textContent = t.searchBtn;
