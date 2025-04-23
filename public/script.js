@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
-  // manage language settings
+  // handle language settings
   class LanguageManager {
     constructor() {
       this.lang = localStorage.getItem("lang") || "pl";
@@ -18,19 +18,59 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const languageManager = new LanguageManager();
 
-  // handle language button
+  // when you click language switcher
   document.getElementById("langToggle").addEventListener("click", () => {
     languageManager.toggle();
   });
 
-  // handle search button (TMDB will be added later)
+  // when you click search button (TMDB search)
   document.getElementById("searchBtn").addEventListener("click", () => {
     const query = document.getElementById("searchQuery").value.trim();
     if (!query) return;
-    console.log("Searching for:", query);
+
+    const lang = languageManager.getCurrent() === "pl" ? "pl-PL" : "en-US";
+
+    // ask our backend to call TMDB with this query
+    fetch(`/api/search?query=${encodeURIComponent(query)}&lang=${lang}`)
+      .then((res) => res.json())
+      .then((results) => {
+        const resultsList = document.getElementById("searchResults");
+        resultsList.innerHTML = "";
+
+        results.forEach((movie) => {
+          const li = document.createElement("li");
+          li.className =
+            "list-group-item d-flex justify-content-between align-items-center";
+          li.textContent = movie.title;
+          if (movie.release_date) {
+            li.textContent += ` (${movie.release_date.substring(0, 4)})`;
+          }
+
+          const addBtn = document.createElement("button");
+          addBtn.className = "btn btn-sm btn-primary";
+          addBtn.textContent =
+            languageManager.getCurrent() === "pl" ? "Dodaj" : "Add";
+
+          addBtn.onclick = () => {
+            fetch("/api/movies", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ title: movie.title }),
+            }).then(() => {
+              loadMovies(); // refresh movie list
+              resultsList.innerHTML = ""; // clear search results
+            });
+          };
+
+          li.appendChild(addBtn);
+          resultsList.appendChild(li);
+        });
+      });
   });
 
-  // handle manual add
+  // when you click manual add
   document.getElementById("addManualBtn").addEventListener("click", () => {
     const title = document.getElementById("manualTitle").value.trim();
     if (!title) return;
@@ -45,14 +85,14 @@ document.addEventListener("DOMContentLoaded", () => {
       .then((res) => {
         if (!res.ok) throw new Error("Failed to add movie");
         console.log("Movie added successfully:", title);
-        loadMovies(); // refresh movie list after adding
+        loadMovies(); // update the list
       })
       .catch((err) => {
         console.error("Error adding movie:", err);
       });
   });
 
-  // fetch and display movies from backend
+  // load and render all movies from backend
   function loadMovies() {
     fetch("/api/movies")
       .then((res) => res.json())
@@ -75,6 +115,7 @@ document.addEventListener("DOMContentLoaded", () => {
           checkbox.className = "form-check-input me-2";
           checkbox.checked = !!movie.watched;
 
+          // toggle watched status
           checkbox.onchange = () => {
             fetch(`/api/movies/${movie.id}`, {
               method: "PUT",
@@ -110,5 +151,6 @@ document.addEventListener("DOMContentLoaded", () => {
       });
   }
 
-  loadMovies(); // load movie list on page load
+  // run it on page load
+  loadMovies();
 });

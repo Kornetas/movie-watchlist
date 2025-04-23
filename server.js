@@ -1,5 +1,6 @@
 const express = require("express");
 const path = require("path");
+require("dotenv").config();
 
 const app = express();
 const PORT = 3000;
@@ -13,6 +14,10 @@ app.use(express.static(path.join(__dirname, "public")));
 //import and use movie routes
 const movieRoutes = require("./routes/movies");
 app.use("/api/movies", movieRoutes);
+
+// route to search movies from TMDB API when user types in a title
+const searchRoutes = require("./routes/search");
+app.use("/api/search", searchRoutes);
 
 const MovieRepository = require("./movieRepository");
 const movieRepo = new MovieRepository(); //containing detailed movies.db file
