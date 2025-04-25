@@ -1,6 +1,17 @@
 import { texts } from "./language.js";
 
-let currentFilter = "all"; // internal state
+export let currentFilter = "all"; // all | watched | unwatched | favorite
+export let currentSort = "newest"; // newest | oldest | az | za
+
+export function setCurrentFilter(value) {
+  currentFilter = value;
+}
+
+export function setCurrentSort(value) {
+  currentSort = value;
+}
+
+// let currentFilter = "all"; // internal state
 export let lastWatched = 0;
 export let lastUnwatched = 0;
 
@@ -22,25 +33,36 @@ export function updateStats(watched, unwatched, lang) {
   lastUnwatched = unwatched;
 }
 
-// change current filter
-export function setCurrentFilter(value) {
-  currentFilter = value;
-}
+// // change current filter
+// export function setCurrentFilter(value) {
+//   currentFilter = value;
+// }
 
 // render all movie items
-function renderMovieList(movies, lang, languageManager, loadMovies) {
+export function renderMovieList(movies, lang, languageManager, loadMovies) {
   const list = document.getElementById("movieList");
   list.innerHTML = "";
 
-  const filtered = movies.filter((movie) => {
+  const filteredMovies = movies.filter((movie) => {
     if (currentFilter === "watched") return movie.watched;
     if (currentFilter === "unwatched") return !movie.watched;
+    if (currentFilter === "favorite") return movie.favorite;
     return true;
+  });
+
+  filteredMovies.sort((a, b) => {
+    if (currentSort === "az") return a.title.localeCompare(b.title);
+    if (currentSort === "za") return b.title.localeCompare(a.title);
+    if (currentSort === "newest")
+      return new Date(b.added_at) - new Date(a.added_at);
+    if (currentSort === "oldest")
+      return new Date(a.added_at) - new Date(b.added_at);
+    return 0;
   });
 
   let watchedCount = 0;
 
-  filtered.forEach((movie) => {
+  filteredMovies.forEach((movie) => {
     const li = document.createElement("li");
     li.className =
       "list-group-item d-flex justify-content-between align-items-center";
@@ -70,7 +92,6 @@ function renderMovieList(movies, lang, languageManager, loadMovies) {
         movie.added_at instanceof Date
           ? movie.added_at
           : new Date(movie.added_at);
-
       const locale = lang === "pl" ? "pl-PL" : "en-US";
       dateText.textContent = date.toLocaleString(locale, {
         dateStyle: "short",
@@ -81,6 +102,7 @@ function renderMovieList(movies, lang, languageManager, loadMovies) {
     titleSpan.appendChild(titleText);
     titleSpan.appendChild(dateText);
 
+    // checkbox: watched
     const checkbox = document.createElement("input");
     checkbox.type = "checkbox";
     checkbox.className = "form-check-input me-2";
@@ -95,6 +117,25 @@ function renderMovieList(movies, lang, languageManager, loadMovies) {
       }).then(() => loadMovies(languageManager));
     };
 
+    // favorite button
+    const favoriteBtn = document.createElement("button");
+    favoriteBtn.className = "favorite-btn me-2";
+    favoriteBtn.innerHTML = movie.favorite ? "⭐" : "☆";
+    if (movie.favorite) {
+      favoriteBtn.classList.add("active");
+    }
+
+    favoriteBtn.title = lang === "pl" ? "Ulubiony" : "Favorite";
+
+    favoriteBtn.onclick = () => {
+      fetch(`/api/movies/${movie.id}/favorite`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ favorite: !movie.favorite }),
+      }).then(() => loadMovies(languageManager));
+    };
+
+    // remove button
     const removeBtn = document.createElement("button");
     removeBtn.textContent = texts[languageManager.getCurrent()].removeBtn;
     removeBtn.className = "btn btn-sm btn-danger";
@@ -104,14 +145,17 @@ function renderMovieList(movies, lang, languageManager, loadMovies) {
       }).then(() => loadMovies(languageManager));
     };
 
+    // style if watched
     if (checkbox.checked) {
       watchedCount++;
       titleText.style.textDecoration = "line-through";
     }
 
+    // final layout
     li.appendChild(checkbox);
     li.appendChild(img);
     li.appendChild(titleSpan);
+    li.appendChild(favoriteBtn);
     li.appendChild(removeBtn);
     list.appendChild(li);
   });

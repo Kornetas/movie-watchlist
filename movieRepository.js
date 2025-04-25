@@ -49,6 +49,11 @@ class MovieRepository {
     const stmt = this.db.prepare("DELETE FROM movies WHERE id = ?");
     return stmt.run(id);
   }
+
+  updateFavorite(id, favorite) {
+    const stmt = this.db.prepare("UPDATE movies SET favorite = ? WHERE id = ?");
+    return stmt.run(favorite ? 1 : 0, id);
+  }
 }
 
 module.exports = MovieRepository;

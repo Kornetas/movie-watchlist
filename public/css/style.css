@@ -1,0 +1,18 @@
+.favorite-btn {
+  background: none;
+  border: none;
+  font-size: 1.4rem;
+  line-height: 1;
+  padding: 0 8px;
+  cursor: pointer;
+  color: #aaa;
+  transition: color 0.2s ease;
+}
+
+.favorite-btn.active {
+  color: gold;
+}
+
+.favorite-btn:hover {
+  color: orange;
+}

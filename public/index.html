@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title id="pageTitle">Lista filmów</title>
+    <link rel="stylesheet" href="/css/style.css" />
     <link
       rel="icon"
       type="image/png"
@@ -69,15 +70,29 @@
         <button id="addManualBtn" class="btn btn-success">Dodaj</button>
       </div>
 
+      <!-- Filters and sorting -->
+      <div
+        class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mt-3 mb-3 gap-2 flex-wrap"
+      >
+        <div id="stats" class="d-flex gap-3 flex-wrap">
+          <b id="totalCount" style="cursor: pointer">Wszystkie filmy: 0</b>
+          <b id="watchedCount" style="cursor: pointer">Obejrzane: 0</b>
+          <b id="unwatchedCount" style="cursor: pointer">Nieobejrzane: 0</b>
+          <b id="favoriteFilter" style="cursor: pointer">⭐ Ulubione</b>
+        </div>
+
+        <div class="d-flex gap-2">
+          <select id="sortSelect" class="form-select form-select-sm w-auto">
+            <option value="newest">Najnowsze</option>
+            <option value="oldest">Najstarsze</option>
+            <option value="az">A → Z</option>
+            <option value="za">Z → A</option>
+          </select>
+        </div>
+      </div>
+
       <!-- Movies list -->
       <ul id="movieList" class="list-group mb-3"></ul>
-
-      <!-- Statistics -->
-      <div id="stats" class="mt-3">
-        <b id="totalCount" style="cursor: pointer">Wszystkie filmy: 0</b> |
-        <b id="watchedCount" style="cursor: pointer">Obejrzane: 0</b> |
-        <b id="unwatchedCount" style="cursor: pointer">Nieobejrzane: 0</b>
-      </div>
     </div>
 
     <!-- Main script -->

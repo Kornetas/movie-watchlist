@@ -17,6 +17,11 @@ export const texts = {
     emptySearch: "Wpisz tytuł, aby wyszukać film.",
     emptyManual: "Wpisz tytuł, aby dodać film.",
     clearBtn: "Wyczyść",
+    favoriteFilter: "⭐ Ulubione",
+    sortNewest: "Najnowsze",
+    sortOldest: "Najstarsze",
+    sortAZ: "A → Z",
+    sortZA: "Z → A",
   },
   en: {
     title: "Movie Watchlist",
@@ -35,6 +40,11 @@ export const texts = {
     emptySearch: "Enter a movie title to search.",
     emptyManual: "Enter a movie title to add.",
     clearBtn: "Clear",
+    favoriteFilter: "⭐ Favorites",
+    sortNewest: "Newest",
+    sortOldest: "Oldest",
+    sortAZ: "A → Z",
+    sortZA: "Z → A",
   },
 };
 

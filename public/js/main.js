@@ -7,6 +7,7 @@ import {
   loadMovies,
   updateStats,
   setCurrentFilter,
+  setCurrentSort,
   lastWatched,
   lastUnwatched,
   rerenderCachedMovies,
@@ -30,6 +31,13 @@ function applyLanguage() {
   document.getElementById("addManualBtn").textContent = t.addBtn;
   document.getElementById("langToggle").textContent = t.langBtn;
   document.getElementById("clearSearchBtn").textContent = t.clearBtn;
+  document.getElementById("favoriteFilter").textContent = t.favoriteFilter;
+
+  const sortSelect = document.getElementById("sortSelect");
+  sortSelect.options[0].text = t.sortNewest;
+  sortSelect.options[1].text = t.sortOldest;
+  sortSelect.options[2].text = t.sortAZ;
+  sortSelect.options[3].text = t.sortZA;
 
   // update stats section
   updateStats(lastWatched, lastUnwatched, lang);
@@ -64,6 +72,17 @@ function setupFilterButtons() {
 
   document.getElementById("totalCount").addEventListener("click", () => {
     setCurrentFilter("all");
+    loadMovies(languageManager);
+  });
+
+  document.getElementById("favoriteFilter").addEventListener("click", () => {
+    setCurrentFilter("favorite");
+    loadMovies(languageManager);
+  });
+
+  // 🔽 sortowanie
+  document.getElementById("sortSelect").addEventListener("change", (e) => {
+    setCurrentSort(e.target.value);
     loadMovies(languageManager);
   });
 }

@@ -43,4 +43,17 @@ router.delete("/:id", (req, res) => {
   res.status(200).json({ message: "Movie deleted" });
 });
 
+// PUT /api/movies/:id/favorite – toggle favorite status
+router.put("/:id/favorite", (req, res) => {
+  const id = req.params.id;
+  const favorite = req.body.favorite;
+
+  if (typeof favorite !== "boolean") {
+    return res.status(400).json({ error: "Invalid favorite value" });
+  }
+
+  req.app.locals.movieRepo.updateFavorite(id, favorite);
+  res.status(200).json({ message: "Favorite status updated" });
+});
+
 module.exports = router;
