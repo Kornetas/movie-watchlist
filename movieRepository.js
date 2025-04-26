@@ -54,6 +54,11 @@ class MovieRepository {
     const stmt = this.db.prepare("UPDATE movies SET favorite = ? WHERE id = ?");
     return stmt.run(favorite ? 1 : 0, id);
   }
+
+  updateRating(id, rating) {
+    const stmt = this.db.prepare("UPDATE movies SET rating = ? WHERE id = ?");
+    return stmt.run(rating, id);
+  }
 }
 
 module.exports = MovieRepository;

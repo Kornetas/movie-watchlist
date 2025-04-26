@@ -16,3 +16,13 @@
 .favorite-btn:hover {
   color: orange;
 }
+
+.rating span {
+  font-size: 1.5rem;
+  margin: 0 2px;
+  transition: color 0.2s;
+}
+
+.rating span:hover {
+  color: gold;
+}

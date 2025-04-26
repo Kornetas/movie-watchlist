@@ -147,6 +147,26 @@ export function renderMovieList(movies, lang, languageManager, loadMovies) {
       }).then(() => loadMovies(languageManager));
     };
 
+    // rating stars
+    const ratingContainer = document.createElement("div");
+    ratingContainer.className = "rating";
+
+    for (let i = 1; i <= 5; i++) {
+      const star = document.createElement("span");
+      star.innerHTML = i <= movie.rating ? "⭐" : "☆";
+      star.style.cursor = "pointer";
+
+      star.onclick = () => {
+        fetch(`/api/movies/${movie.id}/rating`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ rating: i }),
+        }).then(() => loadMovies(languageManager));
+      };
+
+      ratingContainer.appendChild(star);
+    }
+
     // remove button
     const removeBtn = document.createElement("button");
     removeBtn.textContent = texts[languageManager.getCurrent()].removeBtn;
@@ -166,6 +186,7 @@ export function renderMovieList(movies, lang, languageManager, loadMovies) {
     li.appendChild(img);
     li.appendChild(titleSpan);
     li.appendChild(favoriteBtn);
+    li.appendChild(ratingContainer);
     li.appendChild(removeBtn);
     list.appendChild(li);
   });

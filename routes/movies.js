@@ -56,4 +56,17 @@ router.put("/:id/favorite", (req, res) => {
   res.status(200).json({ message: "Favorite status updated" });
 });
 
+// Update movie rating
+router.put("/:id/rating", (req, res) => {
+  const id = req.params.id;
+  const rating = req.body.rating;
+
+  if (typeof rating !== "number" || rating < 0 || rating > 5) {
+    return res.status(400).json({ error: "Invalid rating" });
+  }
+
+  req.app.locals.movieRepo.updateRating(id, rating);
+  res.status(200).json({ message: "Rating updated" });
+});
+
 module.exports = router;
