@@ -1,9 +1,11 @@
 const express = require("express");
 const router = express.Router();
 
-// post api/movies - recive mowie title from fronted
+// post api/movies - add movie
 router.post("/", (req, res) => {
-  const { title, poster } = req.body;
+  console.log("BODY:", req.body);
+
+  const { title, poster, tmdb_link } = req.body; // <--- enter tmdb_link here
 
   if (!title) {
     return res.status(400).send("Title is required");
@@ -13,7 +15,8 @@ router.post("/", (req, res) => {
     return res.status(409).json({ message: "Movie already exists" });
   }
 
-  const result = req.app.locals.movieRepo.add(title, poster);
+  const result = req.app.locals.movieRepo.add({ title, poster, tmdb_link }); // <--- we pass on tmdb_link
+
   res.status(201).json({ message: "Movie saved", id: result.lastInsertRowid });
 });
 

@@ -82,7 +82,7 @@ function setupFilterButtons() {
     loadMovies(languageManager);
   });
 
-  // 🔽 sortowanie
+  // 🔽 sort
   document.getElementById("sortSelect").addEventListener("change", (e) => {
     setCurrentSort(e.target.value);
     loadMovies(languageManager);

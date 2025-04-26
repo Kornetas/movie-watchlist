@@ -58,13 +58,20 @@ export function setupSearch(languageManager) {
           addBtn.textContent = texts[languageManager.getCurrent()].addBtn;
 
           addBtn.onclick = () => {
+            const payload = {
+              title: movie.title,
+              poster: movie.poster,
+              tmdb_link: movie.id
+                ? `https://www.themoviedb.org/movie/${movie.id}`
+                : null,
+            };
+
+            console.log("🎥 Movie object:", movie);
+
             fetch("/api/movies", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                title: movie.title,
-                poster: movie.poster,
-              }),
+              body: JSON.stringify(payload),
             })
               .then((res) => {
                 if (!res.ok) throw new Error(res.status.toString());
