@@ -4,23 +4,31 @@ import { texts } from "./language.js";
 import { showMessage } from "./utils.js";
 import { loadMovies } from "./movieList.js";
 
-// setup logic for manual movie adding
 export function setupManualAdd(languageManager) {
   const addBtn = document.getElementById("addManualBtn");
   const titleInput = document.getElementById("manualTitle");
+  const clearManualBtn = document.getElementById("clearManualBtn");
 
-  // click on "Add" button
+  function clearManualInput() {
+    titleInput.value = "";
+    const lang = languageManager.getCurrent();
+    showMessage(texts[lang].manualCleared, "info");
+  }
+
+  clearManualBtn.addEventListener("click", clearManualInput);
+
   addBtn.addEventListener("click", () => {
     const title = titleInput.value.trim();
+    const lang = languageManager.getCurrent();
     if (!title) {
-      showMessage(texts[languageManager.getCurrent()].emptyManual, "warning");
+      showMessage(texts[lang].emptyManual, "warning");
       return;
     }
 
     fetch("/api/movies", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ title }), // no poster here
+      body: JSON.stringify({ title }),
     })
       .then((res) => {
         if (!res.ok) throw new Error("Failed");
@@ -28,17 +36,15 @@ export function setupManualAdd(languageManager) {
         titleInput.value = "";
       })
       .catch((err) => {
-        const t = texts[languageManager.getCurrent()];
         if (err.message === "409") {
-          showMessage(t.duplicateMovie, "warning");
+          showMessage(texts[lang].duplicateMovie, "warning");
         } else {
-          showMessage(t.errorAdd, "danger");
+          showMessage(texts[lang].errorAdd, "danger");
           console.error("Manual add error:", err);
         }
       });
   });
 
-  // support Enter key to trigger add
   titleInput.addEventListener("keydown", (e) => {
     if (e.key === "Enter") {
       addBtn.click();

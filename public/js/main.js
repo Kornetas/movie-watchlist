@@ -34,6 +34,7 @@ function applyLanguage() {
   document.getElementById("langToggle").textContent = t.langBtn;
   document.getElementById("clearSearchBtn").textContent = t.clearBtn;
   document.getElementById("favoriteFilter").textContent = t.favoriteFilter;
+  document.getElementById("clearManualBtn").textContent = t.clearBtn;
 
   const sortSelect = document.getElementById("sortSelect");
   sortSelect.options[0].text = t.sortDefault;

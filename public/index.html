@@ -27,9 +27,14 @@
       <!-- heading -->
       <div class="d-flex justify-content-between align-items-center mb-3">
         <h1 id="mainHeading">Lista filmów</h1>
-        <button id="langToggle" class="btn btn-outline-secondary btn-sm">
-          EN
-        </button>
+        <div class="d-flex align-items-center gap-2">
+          <span id="languageLabel" style="font-size: 1rem; color: #212529"
+            >Language:</span
+          >
+          <button id="langToggle" class="btn btn-outline-dark btn-sm">
+            EN
+          </button>
+        </div>
       </div>
 
       <!-- TMDB search -->
@@ -47,6 +52,7 @@
         </button>
         <button
           id="clearSearchBtn"
+          style="font-size: 1rem; color: #212529"
           type="button"
           class="btn btn-outline-secondary"
         >
@@ -68,26 +74,38 @@
           autocomplete="off"
         />
         <button id="addManualBtn" class="btn btn-success">Dodaj</button>
+        <button id="clearManualBtn" class="btn btn-outline-secondary">
+          Wyczyść
+        </button>
       </div>
 
-      <!-- Filters and sorting -->
+      <!-- Filters, local search and sorting -->
       <div
-        class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mt-3 mb-3 gap-2 flex-wrap"
+        class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mt-4 mb-3 gap-3 flex-wrap"
       >
-        <div id="stats" class="d-flex gap-3 flex-wrap">
-          <b id="totalCount" style="cursor: pointer">Wszystkie filmy: 0</b>
-          <b id="watchedCount" style="cursor: pointer">Obejrzane: 0</b>
-          <b id="unwatchedCount" style="cursor: pointer">Nieobejrzane: 0</b>
-          <b id="favoriteFilter" style="cursor: pointer">⭐ Ulubione</b>
+        <div class="d-flex flex-wrap align-items-center gap-2">
+          <button id="totalCount" class="btn btn-outline-primary btn-sm">
+            Wszystkie filmy: 0
+          </button>
+          <button id="watchedCount" class="btn btn-outline-success btn-sm">
+            Obejrzane: 0
+          </button>
+          <button id="unwatchedCount" class="btn btn-outline-warning btn-sm">
+            Nieobejrzane: 0
+          </button>
+          <button id="favoriteFilter" class="btn btn-outline-danger btn-sm">
+            ❤️ Ulubione
+          </button>
+        </div>
+
+        <div class="d-flex align-items-center gap-2 flex-wrap">
           <input
             type="text"
             id="localSearch"
-            class="form-control form-control-sm w-auto"
+            class="form-control form-control-sm"
+            placeholder="Szukaj filmów..."
             style="max-width: 220px"
           />
-        </div>
-
-        <div class="d-flex gap-2">
           <select id="sortSelect" class="form-select form-select-sm w-auto">
             <option value="">— Sortuj według —</option>
             <option value="newest">Najnowsze</option>
