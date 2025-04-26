@@ -71,15 +71,18 @@ export function renderMovieList(movies, lang, languageManager, loadMovies) {
   });
 
   // Sort movies
-  filteredMovies.sort((a, b) => {
-    if (currentSort === "az") return a.title.localeCompare(b.title);
-    if (currentSort === "za") return b.title.localeCompare(a.title);
-    if (currentSort === "newest")
-      return new Date(b.added_at) - new Date(a.added_at);
-    if (currentSort === "oldest")
-      return new Date(a.added_at) - new Date(b.added_at);
-    return 0;
-  });
+  // Sort movies
+  if (currentSort) {
+    filteredMovies.sort((a, b) => {
+      if (currentSort === "az") return a.title.localeCompare(b.title);
+      if (currentSort === "za") return b.title.localeCompare(a.title);
+      if (currentSort === "newest")
+        return new Date(b.added_at) - new Date(a.added_at);
+      if (currentSort === "oldest")
+        return new Date(a.added_at) - new Date(b.added_at);
+      return 0;
+    });
+  }
 
   // Render movies
   let watchedCount = 0;

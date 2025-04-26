@@ -36,10 +36,11 @@ function applyLanguage() {
   document.getElementById("favoriteFilter").textContent = t.favoriteFilter;
 
   const sortSelect = document.getElementById("sortSelect");
-  sortSelect.options[0].text = t.sortNewest;
-  sortSelect.options[1].text = t.sortOldest;
-  sortSelect.options[2].text = t.sortAZ;
-  sortSelect.options[3].text = t.sortZA;
+  sortSelect.options[0].text = t.sortDefault;
+  sortSelect.options[1].text = t.sortNewest;
+  sortSelect.options[2].text = t.sortOldest;
+  sortSelect.options[3].text = t.sortAZ;
+  sortSelect.options[4].text = t.sortZA;
 
   // update stats section
   updateStats(lastWatched, lastUnwatched, lang);
