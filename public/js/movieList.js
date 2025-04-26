@@ -167,6 +167,21 @@ export function renderMovieList(movies, lang, languageManager, loadMovies) {
       ratingContainer.appendChild(star);
     }
 
+    const noteArea = document.createElement("textarea");
+    noteArea.className = "form-control mt-2";
+    noteArea.rows = 2;
+    noteArea.placeholder = lang === "pl" ? "Dodaj notatkę..." : "Add a note...";
+    noteArea.name = `note-${movie.id}`;
+    noteArea.value = movie.note || "";
+
+    noteArea.addEventListener("change", () => {
+      fetch(`/api/movies/${movie.id}/note`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ note: noteArea.value }),
+      }).then(() => console.log("Note updated"));
+    });
+
     // remove button
     const removeBtn = document.createElement("button");
     removeBtn.textContent = texts[languageManager.getCurrent()].removeBtn;
@@ -188,6 +203,7 @@ export function renderMovieList(movies, lang, languageManager, loadMovies) {
     li.appendChild(favoriteBtn);
     li.appendChild(ratingContainer);
     li.appendChild(removeBtn);
+    li.appendChild(noteArea);
     list.appendChild(li);
   });
 

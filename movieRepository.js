@@ -59,6 +59,12 @@ class MovieRepository {
     const stmt = this.db.prepare("UPDATE movies SET rating = ? WHERE id = ?");
     return stmt.run(rating, id);
   }
+
+  // update note for a movie
+  updateNote(id, note) {
+    const stmt = this.db.prepare("UPDATE movies SET note = ? WHERE id = ?");
+    return stmt.run(note, id);
+  }
 }
 
 module.exports = MovieRepository;

@@ -69,4 +69,17 @@ router.put("/:id/rating", (req, res) => {
   res.status(200).json({ message: "Rating updated" });
 });
 
+// PUT /api/movies/:id/note – update note
+router.put("/:id/note", (req, res) => {
+  const id = req.params.id;
+  const note = req.body.note;
+
+  if (typeof note !== "string") {
+    return res.status(400).json({ error: "Invalid note" });
+  }
+
+  req.app.locals.movieRepo.updateNote(id, note);
+  res.status(200).json({ message: "Note updated" });
+});
+
 module.exports = router;
