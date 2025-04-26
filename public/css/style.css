@@ -1,3 +1,7 @@
+body {
+  background-color: #fdf7f0 !important; /* bardzo jasny szary, prawie biały */
+}
+
 /* Responsive layout for mobile */
 
 @media (max-width: 576px) {

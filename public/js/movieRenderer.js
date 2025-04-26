@@ -116,7 +116,7 @@ function createMovieListItem(movie, lang, languageManager, loadMovies) {
   // Checkbox: viewed
   const checkbox = document.createElement("input");
   checkbox.type = "checkbox";
-  checkbox.className = "form-check-input me-2";
+  checkbox.className = "form-check-input";
   checkbox.checked = !!movie.watched;
   checkbox.name = `watched-${movie.id}`;
   checkbox.onchange = () => {
@@ -126,6 +126,21 @@ function createMovieListItem(movie, lang, languageManager, loadMovies) {
       body: JSON.stringify({ watched: checkbox.checked }),
     }).then(() => loadMovies(languageManager));
   };
+
+  // Text label
+  const watchedLabel = document.createElement("span");
+  watchedLabel.className = "ms-1";
+  watchedLabel.textContent = lang === "pl" ? "Obejrzane" : "Watched";
+
+  // Wrapper for checkbox + label
+  const watchedContainer = document.createElement("div");
+  watchedContainer.className = "d-flex align-items-center gap-1";
+  watchedContainer.style.padding = "0.25rem 0.5rem";
+  watchedContainer.style.borderRadius = "6px";
+  watchedContainer.style.backgroundColor = "rgba(3, 19, 235, 0.26)";
+
+  watchedContainer.appendChild(checkbox);
+  watchedContainer.appendChild(watchedLabel);
 
   // Heart button
   const favoriteBtn = document.createElement("button");
@@ -190,7 +205,7 @@ function createMovieListItem(movie, lang, languageManager, loadMovies) {
     titleText.style.textDecoration = "line-through";
   }
 
-  li.appendChild(checkbox);
+  li.appendChild(watchedContainer);
   li.appendChild(img);
   li.appendChild(titleSpan);
   li.appendChild(favoriteBtn);
