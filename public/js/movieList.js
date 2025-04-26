@@ -2,6 +2,9 @@ import { texts } from "./language.js";
 
 export let currentFilter = "all"; // all | watched | unwatched | favorite
 export let currentSort = "newest"; // newest | oldest | az | za
+export let lastWatched = 0;
+export let lastUnwatched = 0;
+let lastLocalSearch = ""; // local search query
 
 export function setCurrentFilter(value) {
   currentFilter = value;
@@ -11,9 +14,10 @@ export function setCurrentSort(value) {
   currentSort = value;
 }
 
-// let currentFilter = "all"; // internal state
-export let lastWatched = 0;
-export let lastUnwatched = 0;
+// update search term
+export function setLocalSearch(value) {
+  lastLocalSearch = value.toLowerCase();
+}
 
 // update stats in footer
 export function updateStats(watched, unwatched, lang) {
@@ -33,23 +37,34 @@ export function updateStats(watched, unwatched, lang) {
   lastUnwatched = unwatched;
 }
 
-// // change current filter
-// export function setCurrentFilter(value) {
-//   currentFilter = value;
-// }
-
 // render all movie items
 export function renderMovieList(movies, lang, languageManager, loadMovies) {
   const list = document.getElementById("movieList");
   list.innerHTML = "";
 
-  const filteredMovies = movies.filter((movie) => {
+  // apply main filters
+  let filteredMovies = movies.filter((movie) => {
     if (currentFilter === "watched") return movie.watched;
     if (currentFilter === "unwatched") return !movie.watched;
     if (currentFilter === "favorite") return movie.favorite;
     return true;
   });
 
+  // apply local search filter
+  if (lastLocalSearch) {
+    filteredMovies = filteredMovies.filter((movie) => {
+      const title = movie.title || "";
+      const titlePl = movie.title_pl || "";
+      const titleEn = movie.title_en || "";
+      return (
+        title.toLowerCase().includes(lastLocalSearch) ||
+        titlePl.toLowerCase().includes(lastLocalSearch) ||
+        titleEn.toLowerCase().includes(lastLocalSearch)
+      );
+    });
+  }
+
+  // apply sorting
   filteredMovies.sort((a, b) => {
     if (currentSort === "az") return a.title.localeCompare(b.title);
     if (currentSort === "za") return b.title.localeCompare(a.title);
@@ -60,14 +75,14 @@ export function renderMovieList(movies, lang, languageManager, loadMovies) {
     return 0;
   });
 
+  // render movies
   let watchedCount = 0;
-
   filteredMovies.forEach((movie) => {
     const li = document.createElement("li");
     li.className =
       "list-group-item d-flex justify-content-between align-items-center";
 
-    // poster image
+    // poster
     const img = document.createElement("img");
     img.src = movie.poster
       ? `https://image.tmdb.org/t/p/w154${movie.poster}`
@@ -108,7 +123,6 @@ export function renderMovieList(movies, lang, languageManager, loadMovies) {
     checkbox.className = "form-check-input me-2";
     checkbox.checked = !!movie.watched;
     checkbox.name = `watched-${movie.id}`;
-
     checkbox.onchange = () => {
       fetch(`/api/movies/${movie.id}`, {
         method: "PUT",
@@ -120,13 +134,11 @@ export function renderMovieList(movies, lang, languageManager, loadMovies) {
     // favorite button
     const favoriteBtn = document.createElement("button");
     favoriteBtn.className = "favorite-btn me-2";
-    favoriteBtn.innerHTML = movie.favorite ? "⭐" : "☆";
+    favoriteBtn.innerHTML = movie.favorite ? "❤️" : "🤍";
     if (movie.favorite) {
       favoriteBtn.classList.add("active");
     }
-
     favoriteBtn.title = lang === "pl" ? "Ulubiony" : "Favorite";
-
     favoriteBtn.onclick = () => {
       fetch(`/api/movies/${movie.id}/favorite`, {
         method: "PUT",
@@ -145,13 +157,11 @@ export function renderMovieList(movies, lang, languageManager, loadMovies) {
       }).then(() => loadMovies(languageManager));
     };
 
-    // style if watched
     if (checkbox.checked) {
       watchedCount++;
       titleText.style.textDecoration = "line-through";
     }
 
-    // final layout
     li.appendChild(checkbox);
     li.appendChild(img);
     li.appendChild(titleSpan);
@@ -199,18 +209,16 @@ export function loadMovies(languageManager) {
     });
 }
 
+// re-render cached movies (after language change)
 export function rerenderCachedMovies(languageManager) {
   const cached = localStorage.getItem("cachedMovies");
   if (cached) {
     const movies = JSON.parse(cached);
-
-    // convert string --> Date
     movies.forEach((movie) => {
       if (typeof movie.added_at === "string") {
         movie.added_at = new Date(movie.added_at);
       }
     });
-
     renderMovieList(
       movies,
       languageManager.getCurrent(),

@@ -1,21 +1,28 @@
-// search.js – handles TMDB movie search and result rendering
-
 import { texts } from "./language.js";
 import { showMessage } from "./utils.js";
 import { loadMovies } from "./movieList.js";
 
-// initialize search logic
-export function setupSearch(languageManager) {
-  const searchBtn = document.getElementById("searchBtn");
-  const searchQuery = document.getElementById("searchQuery");
-  const clearBtn = document.getElementById("clearSearchBtn");
-  const resultsList = document.getElementById("searchResults");
+// utility function: debounce
+function debounce(func, delay) {
+  let timeout;
+  return (...args) => {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => {
+      func(...args);
+    }, delay);
+  };
+}
 
-  // search on button click
-  searchBtn.addEventListener("click", () => {
+// main function
+export function setupSearch(languageManager) {
+  const searchQuery = document.getElementById("searchQuery");
+  const resultsList = document.getElementById("searchResults");
+  const clearBtn = document.getElementById("clearSearchBtn");
+
+  const performSearch = () => {
     const query = searchQuery.value.trim();
-    if (!query) {
-      showMessage(texts[languageManager.getCurrent()].emptySearch, "warning");
+    if (query.length < 2) {
+      resultsList.innerHTML = "";
       return;
     }
 
@@ -30,7 +37,6 @@ export function setupSearch(languageManager) {
           const li = document.createElement("li");
           li.className = "list-group-item d-flex align-items-center";
 
-          // poster
           const img = document.createElement("img");
           img.src = movie.poster
             ? `https://image.tmdb.org/t/p/w154${movie.poster}`
@@ -42,13 +48,11 @@ export function setupSearch(languageManager) {
           img.style.objectFit = "cover";
           img.style.borderRadius = "4px";
 
-          // movie title
           const text = document.createElement("div");
           text.innerText = movie.release_date
             ? `${movie.title} (${movie.release_date.substring(0, 4)})`
             : movie.title;
 
-          // add button
           const addBtn = document.createElement("button");
           addBtn.className = "btn btn-sm btn-primary ms-auto";
           addBtn.textContent = texts[languageManager.getCurrent()].addBtn;
@@ -66,7 +70,7 @@ export function setupSearch(languageManager) {
                 if (!res.ok) throw new Error(res.status.toString());
                 loadMovies(languageManager);
                 resultsList.innerHTML = "";
-                document.getElementById("searchQuery").value = "";
+                searchQuery.value = "";
               })
               .catch((err) => {
                 const t = texts[languageManager.getCurrent()];
@@ -85,16 +89,24 @@ export function setupSearch(languageManager) {
           resultsList.appendChild(li);
         });
       });
-  });
+  };
 
-  // search on Enter key
-  searchQuery.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") {
-      searchBtn.click();
+  // debounce applied here:
+  const debouncedSearch = debounce(performSearch, 300);
+
+  // real time search on input
+  searchQuery.addEventListener("input", debouncedSearch);
+
+  // Click on search button, also triggers search
+  searchBtn.addEventListener("click", () => {
+    const query = searchQuery.value.trim();
+    if (!query) {
+      showMessage(texts[languageManager.getCurrent()].emptySearch, "warning");
+      return;
     }
+    performSearch();
   });
 
-  // clear search results
   clearBtn.addEventListener("click", () => {
     searchQuery.value = "";
     resultsList.innerHTML = "";

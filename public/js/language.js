@@ -17,11 +17,12 @@ export const texts = {
     emptySearch: "Wpisz tytuł, aby wyszukać film.",
     emptyManual: "Wpisz tytuł, aby dodać film.",
     clearBtn: "Wyczyść",
-    favoriteFilter: "⭐ Ulubione",
+    favoriteFilter: "❤️ Ulubione",
     sortNewest: "Najnowsze",
     sortOldest: "Najstarsze",
     sortAZ: "A → Z",
     sortZA: "Z → A",
+    localSearchPlaceholder: "Szukaj filmów...",
   },
   en: {
     title: "Movie Watchlist",
@@ -40,11 +41,12 @@ export const texts = {
     emptySearch: "Enter a movie title to search.",
     emptyManual: "Enter a movie title to add.",
     clearBtn: "Clear",
-    favoriteFilter: "⭐ Favorites",
+    favoriteFilter: "❤️ Favorites",
     sortNewest: "Newest",
     sortOldest: "Oldest",
     sortAZ: "A → Z",
     sortZA: "Z → A",
+    localSearchPlaceholder: "Search movies...",
   },
 };
 

@@ -8,6 +8,7 @@ import {
   updateStats,
   setCurrentFilter,
   setCurrentSort,
+  setLocalSearch,
   lastWatched,
   lastUnwatched,
   rerenderCachedMovies,
@@ -26,6 +27,7 @@ function applyLanguage() {
   document.getElementById("pageTitle").textContent = t.title;
   document.getElementById("mainHeading").textContent = t.title;
   document.getElementById("searchQuery").placeholder = t.searchPlaceholder;
+  document.getElementById("localSearch").placeholder = t.localSearchPlaceholder;
   document.getElementById("searchBtn").textContent = t.searchBtn;
   document.getElementById("manualTitle").placeholder = t.addPlaceholder;
   document.getElementById("addManualBtn").textContent = t.addBtn;
@@ -93,6 +95,15 @@ function setupLanguageSwitch() {
     languageManager.toggle();
     applyLanguage();
   });
+
+  const localSearch = document.getElementById("localSearch");
+
+  if (localSearch) {
+    localSearch.addEventListener("input", (e) => {
+      setLocalSearch(e.target.value);
+      loadMovies(languageManager);
+    });
+  }
 }
 
 // run everything on page load
