@@ -49,71 +49,18 @@ function sortMovies(movies, currentSort) {
   }
 }
 
-// Create a single movie <li> element with poster, title, TMDB link, checkbox, favorite button, rating, delete button, and note
 function createMovieListItem(movie, lang, languageManager, loadMovies) {
   const li = document.createElement("li");
   li.className =
-    "list-group-item d-flex justify-content-between align-items-center";
+    "list-group-item d-flex flex-wrap align-items-center justify-content-between gap-3";
 
-  // Poster
-  const img = document.createElement("img");
-  img.src = movie.poster
-    ? `https://image.tmdb.org/t/p/w154${movie.poster}`
-    : "/img/no-poster.png";
-  img.alt = movie.title;
-  img.className = "me-3";
-  img.style.width = "120px";
-  img.style.height = "180px";
-  img.style.objectFit = "cover";
-  img.style.borderRadius = "6px";
-  img.style.boxShadow = "0 2px 6px rgba(0,0,0,0.2)";
+  // === Watched section ===
+  const watchedContainer = document.createElement("div");
+  watchedContainer.className = "d-flex align-items-center gap-1";
+  watchedContainer.style.padding = "0.25rem 0.5rem";
+  watchedContainer.style.borderRadius = "6px";
+  watchedContainer.style.backgroundColor = "#fdf0d5";
 
-  if (movie.tmdb_link) {
-    img.style.cursor = "pointer";
-    img.onclick = () => {
-      window.open(movie.tmdb_link, "_blank", "noopener");
-    };
-  }
-
-  // Title + data
-  const titleSpan = document.createElement("div");
-  titleSpan.className = "d-flex flex-column";
-
-  const titleText = document.createElement("div");
-  titleText.textContent = movie.title || "Brak tytułu";
-
-  const dateText = document.createElement("small");
-  dateText.className = "text-muted";
-
-  if (movie.added_at instanceof Date && !isNaN(movie.added_at)) {
-    const locale = lang === "pl" ? "pl-PL" : "en-US";
-    dateText.textContent = movie.added_at.toLocaleString(locale, {
-      dateStyle: "short",
-      timeStyle: "short",
-    });
-  }
-
-  titleSpan.appendChild(titleText);
-  titleSpan.appendChild(dateText);
-
-  if (movie.tmdb_link) {
-    const tmdbLink = document.createElement("a");
-    tmdbLink.href = movie.tmdb_link;
-    tmdbLink.target = "_blank";
-    tmdbLink.rel = "noopener noreferrer";
-    tmdbLink.textContent = lang === "pl" ? "Zobacz na TMDB" : "View on TMDB";
-    tmdbLink.style.fontSize = "0.8rem";
-    tmdbLink.style.display = "block";
-    tmdbLink.style.marginTop = "4px";
-    tmdbLink.style.color = "#0d6efd";
-    tmdbLink.style.textDecoration = "none";
-    tmdbLink.onmouseover = () => (tmdbLink.style.textDecoration = "underline");
-    tmdbLink.onmouseout = () => (tmdbLink.style.textDecoration = "none");
-
-    titleSpan.appendChild(tmdbLink);
-  }
-
-  // Checkbox: viewed
   const checkbox = document.createElement("input");
   checkbox.type = "checkbox";
   checkbox.className = "form-check-input";
@@ -127,24 +74,100 @@ function createMovieListItem(movie, lang, languageManager, loadMovies) {
     }).then(() => loadMovies(languageManager));
   };
 
-  // Text label
   const watchedLabel = document.createElement("span");
   watchedLabel.className = "ms-1";
   watchedLabel.textContent = lang === "pl" ? "Obejrzane" : "Watched";
 
-  // Wrapper for checkbox + label
-  const watchedContainer = document.createElement("div");
-  watchedContainer.className = "d-flex align-items-center gap-1";
-  watchedContainer.style.padding = "0.25rem 0.5rem";
-  watchedContainer.style.borderRadius = "6px";
-  watchedContainer.style.backgroundColor = "rgba(3, 19, 235, 0.26)";
-
   watchedContainer.appendChild(checkbox);
   watchedContainer.appendChild(watchedLabel);
 
-  // Heart button
+  // === Poster section ===
+  const img = document.createElement("img");
+  img.src = movie.poster
+    ? `https://image.tmdb.org/t/p/w154${movie.poster}`
+    : "/img/no-poster.png";
+  img.alt = movie.title;
+  img.className = "me-3";
+  img.style.width = "120px";
+  img.style.height = "180px";
+  img.style.objectFit = "cover";
+  img.style.borderRadius = "6px";
+  img.style.boxShadow = "0 2px 6px rgba(0,0,0,0.2)";
+  img.style.cursor = movie.tmdb_link ? "pointer" : "default";
+  if (movie.tmdb_link) {
+    img.onclick = () => {
+      window.open(movie.tmdb_link, "_blank", "noopener");
+    };
+  }
+
+  // === Title and date section ===
+  const titleSection = document.createElement("div");
+  titleSection.className = "d-flex flex-column";
+  titleSection.style.maxWidth = "300px";
+  titleSection.style.minWidth = "200px";
+  titleSection.style.flex = "1";
+  titleSection.style.wordBreak = "break-word";
+  titleSection.style.whiteSpace = "normal";
+
+  const titleText = document.createElement("div");
+  titleText.textContent = movie.title || "Brak tytułu";
+  titleText.style.fontWeight = "bold";
+  titleText.style.wordBreak = "break-word";
+  titleText.style.whiteSpace = "normal";
+
+  const dateText = document.createElement("div");
+  dateText.style.fontWeight = "bold";
+  dateText.style.color = "#9a031e";
+  dateText.style.fontSize = "1rem";
+  dateText.style.marginTop = "4px";
+
+  if (movie.added_at instanceof Date && !isNaN(movie.added_at)) {
+    const locale = lang === "pl" ? "pl-PL" : "en-US";
+    dateText.textContent = movie.added_at.toLocaleString(locale, {
+      dateStyle: "short",
+      timeStyle: "short",
+    });
+  }
+
+  titleSection.appendChild(titleText);
+  titleSection.appendChild(dateText);
+
+  if (movie.tmdb_link) {
+    const tmdbLink = document.createElement("a");
+    tmdbLink.href = movie.tmdb_link;
+    tmdbLink.target = "_blank";
+    tmdbLink.rel = "noopener noreferrer";
+    tmdbLink.innerHTML = `
+      <span style="display: inline-flex; align-items: center; gap: 0.4rem;">
+        🌐 <strong>${lang === "pl" ? "Zobacz na TMDB" : "View on TMDB"}</strong>
+      </span>
+    `;
+
+    tmdbLink.className = "btn btn-primary btn-sm mt-2";
+
+    tmdbLink.style.fontSize = "0.75rem";
+    tmdbLink.style.textTransform = "uppercase";
+    tmdbLink.style.letterSpacing = "0.5px";
+    tmdbLink.style.fontWeight = "600";
+    tmdbLink.style.border = "none";
+    tmdbLink.style.backgroundColor = "#0d6efd";
+    tmdbLink.style.color = "white";
+    tmdbLink.style.boxShadow = "0 2px 6px rgba(13, 110, 253, 0.4)";
+
+    titleSection.appendChild(tmdbLink);
+  }
+
+  const favoriteRatingSection = document.createElement("div");
+  favoriteRatingSection.className = "d-flex align-items-center gap-2";
+
+  // === Favorite (heart) section ===
+  const favoriteSection = document.createElement("div");
+  favoriteSection.className =
+    "d-flex justify-content-center align-items-center";
+  favoriteSection.style.minWidth = "50px";
+
   const favoriteBtn = document.createElement("button");
-  favoriteBtn.className = "favorite-btn me-2";
+  favoriteBtn.className = "favorite-btn";
   favoriteBtn.innerHTML = movie.favorite ? "❤️" : "🤍";
   if (movie.favorite) {
     favoriteBtn.classList.add("active");
@@ -158,13 +181,25 @@ function createMovieListItem(movie, lang, languageManager, loadMovies) {
     }).then(() => loadMovies(languageManager));
   };
 
-  // Rating stars
+  favoriteSection.appendChild(favoriteBtn);
+
+  // === Rating (stars) section ===
+  const ratingSection = document.createElement("div");
+  ratingSection.className = "d-flex justify-content-center align-items-center";
+  ratingSection.style.width = "140px";
+  ratingSection.style.flexShrink = "0";
+  ratingSection.style.textAlign = "center";
+
   const ratingContainer = document.createElement("div");
-  ratingContainer.className = "rating";
+  ratingContainer.className = "rating d-flex justify-content-center gap-1";
+  ratingContainer.style.width = "100px";
+
   for (let i = 1; i <= 5; i++) {
     const star = document.createElement("span");
     star.innerHTML = i <= movie.rating ? "⭐" : "☆";
     star.style.cursor = "pointer";
+    star.style.fontSize = "1.2rem";
+    star.style.flex = "0 0 18px";
     star.onclick = () => {
       fetch(`/api/movies/${movie.id}/rating`, {
         method: "PUT",
@@ -175,7 +210,9 @@ function createMovieListItem(movie, lang, languageManager, loadMovies) {
     ratingContainer.appendChild(star);
   }
 
-  // Delete button
+  ratingSection.appendChild(ratingContainer);
+
+  // === Delete button ===
   const removeBtn = document.createElement("button");
   removeBtn.textContent = texts[languageManager.getCurrent()].removeBtn;
   removeBtn.className = "btn btn-sm btn-danger";
@@ -185,9 +222,10 @@ function createMovieListItem(movie, lang, languageManager, loadMovies) {
     }).then(() => loadMovies(languageManager));
   };
 
-  // Note
+  // === Note textarea ===
   const noteArea = document.createElement("textarea");
-  noteArea.className = "form-control mt-2";
+  noteArea.className = "form-control mt-2 fw-bold";
+  noteArea.style.backgroundColor = "#fdf0d5";
   noteArea.rows = 2;
   noteArea.placeholder = lang === "pl" ? "Dodaj notatkę..." : "Add a note...";
   noteArea.name = `note-${movie.id}`;
@@ -200,16 +238,17 @@ function createMovieListItem(movie, lang, languageManager, loadMovies) {
     }).then(() => console.log("Note updated"));
   });
 
-  // final layout
+  // if watched -> line-through title
   if (checkbox.checked) {
     titleText.style.textDecoration = "line-through";
   }
 
+  // FINAL APPEND
   li.appendChild(watchedContainer);
   li.appendChild(img);
-  li.appendChild(titleSpan);
-  li.appendChild(favoriteBtn);
-  li.appendChild(ratingContainer);
+  li.appendChild(titleSection);
+  li.appendChild(favoriteSection);
+  li.appendChild(ratingSection);
   li.appendChild(removeBtn);
   li.appendChild(noteArea);
 
@@ -238,9 +277,10 @@ export function renderMovieList(
     list.appendChild(li);
   });
 
-  const watchedCount = filteredMovies.filter((m) => m.watched).length;
-  const unwatchedCount = filteredMovies.length - watchedCount;
+  const watchedCount = movies.filter((m) => m.watched).length;
+  const unwatchedCount = movies.filter((m) => !m.watched).length;
+  const favoriteCount = movies.filter((m) => m.favorite).length;
   const totalMovies = movies.length;
 
-  updateStats(watchedCount, unwatchedCount, lang, totalMovies);
+  updateStats(watchedCount, unwatchedCount, favoriteCount, totalMovies, lang);
 }

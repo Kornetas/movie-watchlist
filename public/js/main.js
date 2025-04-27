@@ -11,6 +11,8 @@ import {
   setLocalSearch,
   lastWatched,
   lastUnwatched,
+  lastFavorites,
+  lastTotalMovies,
   rerenderCachedMovies,
 } from "./movieList.js";
 
@@ -25,7 +27,6 @@ function applyLanguage() {
   // update page titles and input placeholders
   document.title = t.title;
   document.getElementById("pageTitle").textContent = t.title;
-  document.getElementById("mainHeading").textContent = t.title;
   document.getElementById("searchQuery").placeholder = t.searchPlaceholder;
   document.getElementById("localSearch").placeholder = t.localSearchPlaceholder;
   document.getElementById("searchBtn").textContent = t.searchBtn;
@@ -44,7 +45,7 @@ function applyLanguage() {
   sortSelect.options[4].text = t.sortZA;
 
   // update stats section
-  updateStats(lastWatched, lastUnwatched, lang);
+  updateStats(lastWatched, lastUnwatched, lastFavorites, lastTotalMovies, lang);
 
   // update all "Remove" buttons currently visible
   const removeBtns = document.querySelectorAll("#movieList .btn-danger");

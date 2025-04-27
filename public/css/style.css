@@ -1,5 +1,5 @@
 body {
-  background-color: #fdf7f0 !important; /* bardzo jasny szary, prawie biały */
+  background-color: #fdf7f0 !important;
 }
 
 /* Responsive layout for mobile */
@@ -139,4 +139,34 @@ textarea,
 input.form-control,
 textarea.form-control {
   color: #212529 !important;
+}
+#topbar {
+  background-color: #f8f9fa;
+  height: 42px;
+  font-size: 0.9rem;
+  border-bottom: 1px solid #dee2e6;
+}
+
+#topbar #languageLabel {
+  font-weight: 700;
+  margin-right: 0.5rem;
+}
+
+#topbar #langToggle {
+  padding: 0.25rem 0.75rem;
+  font-size: 0.8rem;
+}
+
+#movieList {
+  background-color: #ffffff97;
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+#movieList li {
+  background-color: #2faf97ba;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
 }

@@ -1,10 +1,10 @@
 // all texts in both languages
 export const texts = {
   pl: {
-    title: "Lista filmów",
+    title: "Lista Filmów",
     searchPlaceholder: "Szukaj filmu w TMDB",
     searchBtn: "Szukaj",
-    addPlaceholder: "Dodaj film ręcznie",
+    addPlaceholder: "Dodaj film",
     addBtn: "Dodaj",
     removeBtn: "Usuń",
     watched: "Obejrzane",
@@ -30,7 +30,7 @@ export const texts = {
     title: "Movie Watchlist",
     searchPlaceholder: "Search TMDB for a movie",
     searchBtn: "Search",
-    addPlaceholder: "Add a movie manually",
+    addPlaceholder: "Add a movie",
     addBtn: "Add",
     removeBtn: "Remove",
     watched: "Watched",

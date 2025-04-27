@@ -5,6 +5,8 @@ export let currentFilter = "all"; // all | watched | unwatched | favorite
 export let currentSort = "newest"; // newest | oldest | az | za
 export let lastWatched = 0;
 export let lastUnwatched = 0;
+export let lastFavorites = 0;
+export let lastTotalMovies = 0;
 let lastLocalSearch = ""; // local search query
 
 export function setCurrentFilter(value) {
@@ -21,8 +23,13 @@ export function setLocalSearch(value) {
 }
 
 // update stats in footer
-export function updateStats(watched, unwatched, lang, totalMovies) {
+export function updateStats(watched, unwatched, favorites, totalMovies, lang) {
   const t = texts[lang];
+
+  lastWatched = watched;
+  lastUnwatched = unwatched;
+  lastFavorites = favorites;
+  lastTotalMovies = totalMovies;
 
   document.getElementById(
     "totalCount"
@@ -33,9 +40,9 @@ export function updateStats(watched, unwatched, lang, totalMovies) {
   document.getElementById(
     "unwatchedCount"
   ).textContent = `${t.unwatched}: ${unwatched}`;
-
-  lastWatched = watched;
-  lastUnwatched = unwatched;
+  document.getElementById(
+    "favoriteFilter"
+  ).textContent = `${t.favoriteFilter} ${favorites}`;
 }
 
 // load movies from API or cache
