@@ -1,3 +1,4 @@
+/* --- Globalne Style --- */
 body {
   background-color: #fdf7f0 !important;
 }
@@ -20,7 +21,7 @@ body {
   font-size: 0.8rem;
 }
 
-/* --- Standard Table --- */
+/* --- Table --- */
 .table-responsive {
   max-height: 70vh;
   overflow-y: auto;
@@ -41,7 +42,7 @@ body {
   letter-spacing: 0.5px;
 }
 
-/* --- Movie Card (Mobile) --- */
+/* --- Movie Card --- */
 #movieCards .movie-card {
   background-color: #ffffff;
   border: 1px solid #dee2e6;
@@ -87,7 +88,7 @@ body {
   text-align: center;
 }
 
-/* Heart button on mobile */
+/* Heart button */
 .movie-card .btn-light {
   font-size: 1.6rem;
   opacity: 0.8;
@@ -103,107 +104,7 @@ body {
   margin-top: 0.5rem;
 }
 
-@media (min-width: 768px) {
-  #movieCards {
-    display: none !important;
-  }
-
-  /* --- (PC) --- */
-
-  /* Poster */
-  #movieTableHeader th:nth-child(1),
-  #movieList td:nth-child(1) {
-    width: 120px;
-    min-width: 120px;
-    max-width: 120px;
-  }
-
-  /* Title */
-  #movieTableHeader th:nth-child(2),
-  #movieList td:nth-child(2) {
-    width: 240px;
-    min-width: 240px;
-    max-width: 240px;
-  }
-
-  /* Date */
-  #movieTableHeader th:nth-child(3),
-  #movieList td:nth-child(3) {
-    width: 110px;
-    min-width: 110px;
-    max-width: 110px;
-  }
-
-  /* TMDB */
-  #movieTableHeader th:nth-child(4),
-  #movieList td:nth-child(4) {
-    width: 100px;
-    min-width: 100px;
-    max-width: 100px;
-  }
-
-  /* Note */
-  #movieTableHeader th:nth-child(5),
-  #movieList td:nth-child(5) {
-    width: 230px;
-    min-width: 230px;
-    max-width: 230px;
-  }
-
-  /* Watched */
-  #movieTableHeader th:nth-child(6),
-  #movieList td:nth-child(6) {
-    width: 110px;
-    min-width: 110px;
-    max-width: 110px;
-  }
-
-  /* Favorite */
-  #movieTableHeader th:nth-child(7),
-  #movieList td:nth-child(7) {
-    width: 100px;
-    min-width: 100px;
-    max-width: 100px;
-  }
-
-  /* Rate */
-  #movieTableHeader th:nth-child(8),
-  #movieList td:nth-child(8) {
-    width: 170px;
-    min-width: 170px;
-    max-width: 170px;
-  }
-
-  /* Delete */
-  #movieTableHeader th:nth-child(9),
-  #movieList td:nth-child(9) {
-    width: 90px;
-    min-width: 90px;
-    max-width: 90px;
-  }
-}
-
-/* --- On the Phone (Mobile) --- */
-@media (max-width: 767px) {
-  .table-responsive {
-    display: none !important;
-  }
-
-  /* Buttons and inputs full width */
-  #searchQuery,
-  #manualTitle,
-  #localSearch,
-  #sortSelect {
-    width: 100%;
-  }
-
-  /* Center for stars and hearts */
-  .movie-card .rating {
-    text-align: center;
-  }
-}
-
-/* --- Inputs and Control Button --- */
+/* --- Inputs and Buttons (Global - PC) --- */
 #searchQuery,
 #manualTitle {
   min-width: 200px;
@@ -223,6 +124,7 @@ body {
 #localSearch {
   min-width: 220px;
   max-width: 220px;
+  width: 220px;
 }
 
 #sortSelect {
@@ -230,7 +132,7 @@ body {
   max-width: 160px;
 }
 
-/* --- Filter buttons --- */
+/* --- Filter Buttons --- */
 #totalCount,
 #watchedCount,
 #unwatchedCount,
@@ -239,4 +141,160 @@ body {
   max-width: 160px;
   text-align: center;
   white-space: nowrap;
+}
+
+/* --- PC-only --- */
+@media (min-width: 768px) {
+  #movieCards {
+    display: none !important;
+  }
+
+  #movieTableHeader th:nth-child(1),
+  #movieList td:nth-child(1) {
+    width: 120px;
+    min-width: 120px;
+    max-width: 120px;
+  }
+
+  #movieTableHeader th:nth-child(2),
+  #movieList td:nth-child(2) {
+    width: 240px;
+    min-width: 240px;
+    max-width: 240px;
+  }
+
+  #movieTableHeader th:nth-child(3),
+  #movieList td:nth-child(3) {
+    width: 110px;
+    min-width: 110px;
+    max-width: 110px;
+  }
+
+  #movieTableHeader th:nth-child(4),
+  #movieList td:nth-child(4) {
+    width: 100px;
+    min-width: 100px;
+    max-width: 100px;
+  }
+
+  #movieTableHeader th:nth-child(5),
+  #movieList td:nth-child(5) {
+    width: 230px;
+    min-width: 230px;
+    max-width: 230px;
+  }
+
+  #movieTableHeader th:nth-child(6),
+  #movieList td:nth-child(6) {
+    width: 110px;
+    min-width: 110px;
+    max-width: 110px;
+  }
+
+  #movieTableHeader th:nth-child(7),
+  #movieList td:nth-child(7) {
+    width: 100px;
+    min-width: 100px;
+    max-width: 100px;
+  }
+
+  #movieTableHeader th:nth-child(8),
+  #movieList td:nth-child(8) {
+    width: 170px;
+    min-width: 170px;
+    max-width: 170px;
+  }
+
+  #movieTableHeader th:nth-child(9),
+  #movieList td:nth-child(9) {
+    width: 90px;
+    min-width: 90px;
+    max-width: 90px;
+  }
+}
+
+/* MOBILE TELEPHONE */
+
+@media (max-width: 767px) {
+  /* TMDB search input / Add movie input */
+  #searchQuery,
+  #manualTitle {
+    width: 100%;
+    max-width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+    text-align: center;
+    font-size: 0.85rem;
+    padding: 0.4rem 0.5rem;
+  }
+
+  /* Button container */
+  .search-section .d-flex.flex-wrap.gap-2 {
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+
+  /* Search / Add / Clear buttons */
+  .search-section button,
+  #searchBtn,
+  #clearSearchBtn,
+  #addManualBtn,
+  #clearManualBtn {
+    width: 100%;
+    max-width: 100%;
+    font-size: 0.85rem;
+    padding: 0.4rem 0.5rem;
+    text-align: center;
+  }
+
+  /* Container for search input + sort select */
+  .search-sort-wrapper {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    gap: 8px;
+    width: 100%;
+    padding: 0 10px;
+  }
+
+  /* Local movie search input */
+  #localSearch {
+    flex: 1 1 50%;
+    min-width: 0;
+    font-size: 0.85rem;
+    padding: 0.4rem 0.5rem;
+  }
+
+  /* Sort by select */
+  #sortSelect {
+    flex: 1 1 60%;
+    min-width: 0;
+    font-size: 0.85rem;
+    padding: 0.4rem 0.5rem;
+  }
+
+  /* Filter buttons container */
+  .filters-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    width: 100%;
+    padding: 0 8px;
+  }
+
+  /* Each filter button */
+  #totalCount,
+  #watchedCount,
+  #unwatchedCount,
+  #favoriteFilter {
+    flex: 0 0 48%;
+    max-width: 48%;
+    min-width: 48%;
+    text-align: center;
+    font-size: 0.85rem;
+    padding: 0.3rem 0.5rem;
+    white-space: nowrap;
+  }
 }

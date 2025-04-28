@@ -48,10 +48,12 @@
 
     <div class="container py-4">
       <!-- TMDB Search + Manual Add (in one row) -->
-      <div class="d-flex flex-wrap gap-3 mb-4">
+      <div class="d-flex flex-wrap gap-3 mb-4 search-section">
         <!-- Search TMDB -->
         <div class="flex-fill">
-          <div class="input-group">
+          <div
+            class="d-flex flex-column align-items-start align-items-md-stretch gap-2"
+          >
             <input
               id="searchQuery"
               name="searchQuery"
@@ -60,22 +62,28 @@
               placeholder="Szukaj filmu w TMDB"
               autocomplete="off"
             />
-            <button id="searchBtn" type="button" class="btn btn-primary">
-              Szukaj
-            </button>
-            <button
-              id="clearSearchBtn"
-              type="button"
-              class="btn btn-outline-secondary fw-bold"
+            <div
+              class="d-flex flex-wrap gap-2 justify-content-center justify-content-md-start"
             >
-              Wyczyść
-            </button>
+              <button id="searchBtn" type="button" class="btn btn-primary">
+                Szukaj
+              </button>
+              <button
+                id="clearSearchBtn"
+                type="button"
+                class="btn btn-outline-secondary fw-bold"
+              >
+                Wyczyść
+              </button>
+            </div>
           </div>
         </div>
 
         <!-- Add Manual Movie -->
         <div class="flex-fill">
-          <div class="input-group">
+          <div
+            class="d-flex flex-column align-items-start align-items-md-stretch gap-2"
+          >
             <input
               id="manualTitle"
               name="manualTitle"
@@ -84,14 +92,18 @@
               placeholder="Dodaj film"
               autocomplete="off"
             />
-            <button id="addManualBtn" class="btn btn-success">Dodaj</button>
-            <button
-              id="clearManualBtn"
-              type="button"
-              class="btn btn-outline-secondary fw-bold"
+            <div
+              class="d-flex flex-wrap gap-2 justify-content-center justify-content-md-start"
             >
-              Wyczyść
-            </button>
+              <button id="addManualBtn" class="btn btn-success">Dodaj</button>
+              <button
+                id="clearManualBtn"
+                type="button"
+                class="btn btn-outline-secondary fw-bold"
+              >
+                Wyczyść
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -114,22 +126,20 @@
             Nieobejrzane: 0
           </button>
           <button id="favoriteFilter" class="btn btn-secondary btn-sm">
-            ❤️ Ulubione
+            ❤️ Ulubione 0
           </button>
+        </div>
 
+        <div class="search-sort-wrapper d-flex align-items-center">
           <input
             id="localSearch"
             type="text"
             class="form-control form-control-sm fw-bold"
             placeholder="Szukaj filmów..."
-            style="max-width: 220px; min-width: 220px"
           />
-        </div>
-
-        <div class="d-flex align-items-center">
           <select
             id="sortSelect"
-            class="form-select form-select-sm w-auto fw-bold"
+            class="form-select form-select-sm w-auto fw-bold ms-2"
           >
             <option value="">— Sortuj według —</option>
             <option value="newest">Najnowsze</option>
@@ -146,7 +156,6 @@
           class="table table-striped table-bordered table-hover align-middle text-center"
         >
           <thead id="movieTableHeader"></thead>
-          <!-- Header generated dynamically -->
           <tbody id="movieList" class="fw-bold"></tbody>
         </table>
       </div>

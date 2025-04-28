@@ -139,7 +139,7 @@ function createTableRow(movie, lang, languageManager, loadMovies) {
   note.style.borderWidth = "1px";
   note.style.borderColor = "#6c757d";
   note.style.borderStyle = "solid";
-  note.style.borderRadius = "6px"; // (opcjonalnie: zaokrąglenie rogów)
+  note.style.borderRadius = "6px";
 
   note.addEventListener("change", () => {
     saveNote();
@@ -159,7 +159,7 @@ function createTableRow(movie, lang, languageManager, loadMovies) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ note: note.value }),
     }).then(() => {
-      loadMovies(languageManager); // odświeżenie listy po zapisaniu
+      loadMovies(languageManager);
     });
   }
 
@@ -189,10 +189,10 @@ function createTableRow(movie, lang, languageManager, loadMovies) {
   favoriteBtn.innerHTML = movie.favorite ? "❤️" : "🤍";
   favoriteBtn.id = `favorite-desktop-${movie.id}`;
   favoriteBtn.name = `favorite-desktop-${movie.id}`;
-  favoriteBtn.style.background = "transparent"; // brak tła
-  favoriteBtn.style.border = "none"; // brak ramki
-  favoriteBtn.style.color = movie.favorite ? "#dc3545" : "#6c757d"; // kolor
-  favoriteBtn.style.fontSize = "1.3rem"; // (tak jak masz wcześniej)
+  favoriteBtn.style.background = "transparent";
+  favoriteBtn.style.border = "none";
+  favoriteBtn.style.color = movie.favorite ? "#dc3545" : "#6c757d";
+  favoriteBtn.style.fontSize = "1.3rem";
 
   favoriteBtn.addEventListener("click", () => {
     fetch(`/api/movies/${movie.id}/favorite`, {
@@ -226,7 +226,7 @@ function createTableRow(movie, lang, languageManager, loadMovies) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ rating: i }),
       }).then(() => {
-        loadMovies(languageManager); // ⬅️ pełna aktualizacja całej listy
+        loadMovies(languageManager);
       });
     });
 
@@ -292,7 +292,7 @@ function createMovieCard(movie, lang, languageManager, loadMovies) {
       dateStyle: "short",
       timeStyle: "short",
     });
-    date.style.fontWeight = "bold"; // pogrubiona godzina!
+    date.style.fontWeight = "bold";
   }
 
   // TMDB Button
@@ -316,11 +316,10 @@ function createMovieCard(movie, lang, languageManager, loadMovies) {
   note.style.fontWeight = "600";
   note.style.color = "#212529";
 
-  // Nowe style dla ładniejszej ramki:
   note.style.borderWidth = "1px";
   note.style.borderColor = "#6c757d";
   note.style.borderStyle = "solid";
-  note.style.borderRadius = "6px"; // (opcjonalnie: zaokrąglenie)
+  note.style.borderRadius = "6px";
 
   note.addEventListener("change", () => {
     fetch(`/api/movies/${movie.id}/note`, {
@@ -328,7 +327,7 @@ function createMovieCard(movie, lang, languageManager, loadMovies) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ note: note.value }),
     }).then(() => {
-      loadMovies(languageManager); // odświeżenie po zapisaniu notatki
+      loadMovies(languageManager);
     });
   });
 
@@ -355,7 +354,7 @@ function createMovieCard(movie, lang, languageManager, loadMovies) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ watched: newWatched }),
     }).then(() => {
-      loadMovies(languageManager); // reload whole
+      loadMovies(languageManager);
     });
   });
 
@@ -367,11 +366,11 @@ function createMovieCard(movie, lang, languageManager, loadMovies) {
   favoriteBtn.className = "btn btn-light btn-sm mt-2";
   favoriteBtn.innerHTML = movie.favorite ? "❤️" : "🤍";
   favoriteBtn.style.fontSize = "1.8rem";
-  favoriteBtn.style.background = "transparent"; // brak tła
-  favoriteBtn.style.border = "none"; // brak ramki
-  favoriteBtn.style.color = movie.favorite ? "#dc3545" : "#6c757d"; // wyraźny kolor
+  favoriteBtn.style.background = "transparent";
+  favoriteBtn.style.border = "none";
+  favoriteBtn.style.color = movie.favorite ? "#dc3545" : "#6c757d";
   favoriteBtn.style.display = "block";
-  favoriteBtn.style.margin = "0 auto"; // wyśrodkowane
+  favoriteBtn.style.margin = "0 auto";
 
   favoriteBtn.addEventListener("click", () => {
     fetch(`/api/movies/${movie.id}/favorite`, {
@@ -379,7 +378,6 @@ function createMovieCard(movie, lang, languageManager, loadMovies) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ favorite: !movie.favorite }),
     }).then(() => {
-      // po kliknięciu zmień wygląd bez odświeżania:
       movie.favorite = !movie.favorite;
       favoriteBtn.innerHTML = movie.favorite ? "❤️" : "🤍";
       favoriteBtn.style.color = movie.favorite ? "#dc3545" : "#6c757d";
@@ -391,14 +389,14 @@ function createMovieCard(movie, lang, languageManager, loadMovies) {
 
   ratingDiv.className = "rating mt-2";
   ratingDiv.style.display = "flex";
-  ratingDiv.style.justifyContent = "center"; // gwiazdki na środku
+  ratingDiv.style.justifyContent = "center";
   ratingDiv.style.gap = "2px";
 
   for (let i = 1; i <= 5; i++) {
     const star = document.createElement("span");
     star.innerHTML = i <= movie.rating ? "⭐" : "☆";
     star.style.cursor = "pointer";
-    star.style.fontSize = "1.5rem"; // większe gwiazdki
+    star.style.fontSize = "1.5rem";
     star.id = `star-mobile-${movie.id}-${i}`;
     star.name = `star-mobile-${movie.id}-${i}`;
     star.addEventListener("click", () => {
