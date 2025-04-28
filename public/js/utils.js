@@ -10,3 +10,12 @@ export function showMessage(text, type = "info", timeout = 3000) {
     box.style.display = "none";
   }, timeout);
 }
+
+// Parse movie dates from strings to Date objects
+export function parseMovieDates(movies) {
+  movies.forEach((movie) => {
+    if (typeof movie.added_at === "string") {
+      movie.added_at = new Date(movie.added_at);
+    }
+  });
+}
