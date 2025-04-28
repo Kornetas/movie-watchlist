@@ -216,85 +216,159 @@ body {
 /* MOBILE TELEPHONE */
 
 @media (max-width: 767px) {
-  /* TMDB search input / Add movie input */
+  /* Inputs: Search TMDB and Add Movie */
   #searchQuery,
   #manualTitle {
     width: 100%;
     max-width: 100%;
-    margin-left: 0;
-    margin-right: 0;
+    border-radius: 10px;
+    border: 1px solid #ced4da;
+    background-color: #f8f9fa;
+    padding: 0.4rem 0.6rem;
+    font-size: 0.75rem;
+    font-weight: bold; /* 🆕 Pogrubienie tekstu */
     text-align: center;
-    font-size: 0.85rem;
-    padding: 0.4rem 0.5rem;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
   }
 
-  /* Button container */
-  .search-section .d-flex.flex-wrap.gap-2 {
+  /* Textarea for note (Dodaj notatkę) */
+  .movie-card textarea {
     width: 100%;
-    flex-direction: column;
-    align-items: stretch;
-    gap: 8px;
+    border-radius: 10px;
+    border: 1px solid #ced4da;
+    background-color: #f8f9fa;
+    padding: 0.4rem 0.6rem;
+    font-size: 0.75rem;
+    font-weight: bold; /* 🆕 Pogrubienie tekstu */
+    text-align: center;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
+    resize: vertical;
+    min-height: 60px;
   }
 
-  /* Search / Add / Clear buttons */
+  /* Button container: make buttons side by side */
+  .search-section .d-flex.flex-wrap.gap-2 {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+  }
+
+  /* Each button: Search / Add / Clear */
   .search-section button,
   #searchBtn,
   #clearSearchBtn,
   #addManualBtn,
   #clearManualBtn {
-    width: 100%;
-    max-width: 100%;
-    font-size: 0.85rem;
-    padding: 0.4rem 0.5rem;
+    flex: 1 1 30%;
+    max-width: 30%;
+    background-color: #4f46e5;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 0.6rem 0.7rem;
+    font-size: 0.75rem;
+    font-weight: bold;
     text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
   }
 
-  /* Container for search input + sort select */
+  /* Hover effect for buttons */
+  .search-section button:hover,
+  #searchBtn:hover,
+  #clearSearchBtn:hover,
+  #addManualBtn:hover,
+  #clearManualBtn:hover {
+    transform: scale(1.02);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  }
+
+  /* Search and Sort container */
   .search-sort-wrapper {
     display: flex;
-    flex-wrap: nowrap;
-    justify-content: space-between;
+    flex-direction: column;
     gap: 8px;
-    width: 100%;
-    padding: 0 10px;
-  }
-
-  /* Local movie search input */
-  #localSearch {
-    flex: 1 1 50%;
-    min-width: 0;
-    font-size: 0.85rem;
-    padding: 0.4rem 0.5rem;
-  }
-
-  /* Sort by select */
-  #sortSelect {
-    flex: 1 1 60%;
-    min-width: 0;
-    font-size: 0.85rem;
-    padding: 0.4rem 0.5rem;
-  }
-
-  /* Filter buttons container */
-  .filters-wrapper {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
     width: 100%;
     padding: 0 8px;
   }
 
-  /* Each filter button */
+  /* Local search input (Szukaj filmów...) */
+  #localSearch {
+    width: 100%;
+    border-radius: 10px;
+    border: 1px solid #ced4da;
+    background-color: #f8f9fa;
+    padding: 0.4rem 0.6rem;
+    font-size: 0.75rem;
+    font-weight: bold; /* 🆕 Pogrubienie tekstu */
+    text-align: center;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
+  }
+
+  /* Sort select */
+  #sortSelect {
+    width: 100%;
+    border-radius: 10px;
+    border: 1px solid #ced4da;
+    background-color: #f8f9fa;
+    padding: 0.4rem 0.6rem;
+    font-size: 0.75rem;
+    font-weight: bold; /* 🆕 Pogrubienie tekstu */
+    color: #212529;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
+  }
+
+  /* Filter container */
+  .filters-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 16px;
+    margin-bottom: 8px;
+  }
+
+  /* Every filter button */
   #totalCount,
   #watchedCount,
   #unwatchedCount,
   #favoriteFilter {
-    flex: 0 0 48%;
-    max-width: 48%;
-    min-width: 48%;
+    flex: 0 0 calc(50% - 4px);
+    max-width: calc(50% - 4px);
+    min-width: calc(50% - 4px);
     text-align: center;
-    font-size: 0.85rem;
-    padding: 0.3rem 0.5rem;
-    white-space: nowrap;
+    font-size: 0.8rem;
+    font-weight: bold;
+    padding: 0.6rem 0.8rem;
+    border-radius: 8px;
+  }
+
+  /* Hover */
+  #totalCount:hover,
+  #watchedCount:hover,
+  #unwatchedCount:hover,
+  #favoriteFilter:hover {
+    transform: scale(1.07);
+  }
+
+  /* Placeholder styles */
+  input::placeholder,
+  textarea::placeholder,
+  select::placeholder {
+    font-weight: bold !important;
+    color: #000000 !important;
+    opacity: 1;
+  }
+
+  /* Focus styles */
+  input:focus,
+  textarea:focus,
+  select:focus {
+    outline: none;
+    border-color: #4f46e5 !important;
+    box-shadow: 0 0 4px #4f46e5 !important;
   }
 }
