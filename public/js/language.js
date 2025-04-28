@@ -42,6 +42,12 @@ export const texts = {
     unwatchedMobileBtn: "❌ Obejrzane",
     notePlaceholderMobile: "Dodaj notatkę...",
     removeBtnMobile: "Usuń",
+
+    // 🆕 Nowe dla modala
+    confirmDeleteTitle: "Potwierdź usunięcie",
+    confirmDeleteMessage: "Czy na pewno chcesz usunąć ten film?",
+    confirmDeleteBtn: "Usuń",
+    cancelDeleteBtn: "Anuluj",
   },
 
   en: {
@@ -86,6 +92,12 @@ export const texts = {
     unwatchedMobileBtn: "❌ Watch",
     notePlaceholderMobile: "Add a note...",
     removeBtnMobile: "Remove",
+
+    // 🆕 Nowe dla modala
+    confirmDeleteTitle: "Confirm Deletion",
+    confirmDeleteMessage: "Are you sure you want to delete this movie?",
+    confirmDeleteBtn: "Delete",
+    cancelDeleteBtn: "Cancel",
   },
 };
 

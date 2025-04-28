@@ -1,39 +1,12 @@
+import { openDeleteModal } from "./modalHandler.js";
 import { texts } from "./language.js";
+import { loadMovies } from "./movieList.js";
+import { languageManager } from "./main.js";
 
-// Create the table header for movies
-export function createTableHeader(lang) {
-  const thead = document.createElement("thead");
-  thead.id = "movieTableHeader";
-
+export function createTableRow(movie, lang) {
   const tr = document.createElement("tr");
 
-  const headers = [
-    texts[lang].headerPoster,
-    texts[lang].headerTitle,
-    texts[lang].headerDate,
-    texts[lang].headerTmdb,
-    texts[lang].headerNote,
-    texts[lang].headerWatched,
-    texts[lang].headerFavorite,
-    texts[lang].headerRating,
-    texts[lang].headerRemove,
-  ];
-
-  headers.forEach((headerText) => {
-    const th = document.createElement("th");
-    th.textContent = headerText;
-    tr.appendChild(th);
-  });
-
-  thead.appendChild(tr);
-  return thead;
-}
-
-// Create one table row for desktop view
-export function createTableRow(movie, lang, languageManager, loadMovies) {
-  const tr = document.createElement("tr");
-
-  // Poster cell
+  // Poster
   const posterTd = document.createElement("td");
   const poster = document.createElement("img");
   poster.src = movie.poster
@@ -44,13 +17,13 @@ export function createTableRow(movie, lang, languageManager, loadMovies) {
   poster.style.objectFit = "cover";
   posterTd.appendChild(poster);
 
-  // Title cell
+  // Title
   const titleTd = document.createElement("td");
   titleTd.textContent = movie.release_year
     ? `${movie.title} (${movie.release_year})`
-    : movie.title || "No title";
+    : movie.title || "Brak tytułu";
 
-  // Date cell
+  // Date
   const dateTd = document.createElement("td");
   if (movie.added_at) {
     const locale = lang === "pl" ? "pl-PL" : "en-US";
@@ -61,7 +34,7 @@ export function createTableRow(movie, lang, languageManager, loadMovies) {
     });
   }
 
-  // TMDB button
+  // TMDB
   const tmdbTd = document.createElement("td");
   if (movie.tmdb_link) {
     const link = document.createElement("a");
@@ -73,27 +46,16 @@ export function createTableRow(movie, lang, languageManager, loadMovies) {
     tmdbTd.appendChild(link);
   }
 
-  // Note textarea
+  // Note
   const noteTd = document.createElement("td");
   const note = document.createElement("textarea");
-  note.id = `note-${movie.id}`;
-  note.name = `note-${movie.id}`;
-  note.className = "form-control form-control-sm fw";
-  note.style.fontWeight = "600";
-  note.style.color = "black";
-  note.rows = 2;
-  note.placeholder = lang === "pl" ? "Add note..." : "Add note...";
+  note.className = "form-control form-control-sm fw-bold";
+  note.placeholder = texts[lang].notePlaceholderMobile;
   note.value = movie.note || "";
+  note.id = `note-desktop-${movie.id}`;
+  note.name = `note-desktop-${movie.id}`;
 
-  note.style.borderWidth = "1px";
-  note.style.borderColor = "#6c757d";
-  note.style.borderStyle = "solid";
-  note.style.borderRadius = "6px";
-
-  note.addEventListener("change", () => {
-    saveNote();
-  });
-
+  note.addEventListener("change", () => saveNote());
   note.addEventListener("keydown", (e) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
@@ -106,9 +68,7 @@ export function createTableRow(movie, lang, languageManager, loadMovies) {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ note: note.value }),
-    }).then(() => {
-      loadMovies(languageManager);
-    });
+    }).then(() => loadMovies(languageManager));
   }
 
   noteTd.appendChild(note);
@@ -119,6 +79,8 @@ export function createTableRow(movie, lang, languageManager, loadMovies) {
   watchedCheckbox.type = "checkbox";
   watchedCheckbox.className = "form-check-input";
   watchedCheckbox.checked = !!movie.watched;
+  watchedCheckbox.id = `watched-desktop-${movie.id}`;
+  watchedCheckbox.name = `watched-desktop-${movie.id}`;
   watchedCheckbox.addEventListener("change", () => {
     fetch(`/api/movies/${movie.id}`, {
       method: "PUT",
@@ -136,60 +98,48 @@ export function createTableRow(movie, lang, languageManager, loadMovies) {
   favoriteBtn.style.background = "transparent";
   favoriteBtn.style.border = "none";
   favoriteBtn.style.color = movie.favorite ? "#dc3545" : "#6c757d";
-  favoriteBtn.style.fontSize = "1.3rem";
-
+  favoriteBtn.id = `favorite-desktop-${movie.id}`;
+  favoriteBtn.name = `favorite-desktop-${movie.id}`;
   favoriteBtn.addEventListener("click", () => {
     fetch(`/api/movies/${movie.id}/favorite`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ favorite: !movie.favorite }),
-    }).then(() => {
-      movie.favorite = !movie.favorite;
-      favoriteBtn.innerHTML = movie.favorite ? "❤️" : "🤍";
-      favoriteBtn.style.color = movie.favorite ? "#dc3545" : "#6c757d";
-    });
+    }).then(() => loadMovies(languageManager));
   });
   favoriteTd.appendChild(favoriteBtn);
 
-  // Rating stars
+  // Rating
   const ratingTd = document.createElement("td");
   ratingTd.style.whiteSpace = "nowrap";
-
   for (let i = 1; i <= 5; i++) {
     const star = document.createElement("span");
     star.innerHTML = i <= movie.rating ? "⭐" : "☆";
     star.style.cursor = "pointer";
     star.style.fontSize = "1.1rem";
     star.style.padding = "0 2px";
-
+    star.id = `star-desktop-${movie.id}-${i}`;
+    star.name = `star-desktop-${movie.id}-${i}`;
     star.addEventListener("click", () => {
       fetch(`/api/movies/${movie.id}/rating`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ rating: i }),
-      }).then(() => {
-        loadMovies(languageManager);
-      });
+      }).then(() => loadMovies(languageManager));
     });
-
     ratingTd.appendChild(star);
   }
 
-  // Delete button
+  // Delete
   const removeTd = document.createElement("td");
   const deleteBtn = document.createElement("button");
   deleteBtn.className = "btn btn-danger btn-sm";
   deleteBtn.innerHTML = "🗑️";
-
+  deleteBtn.id = `delete-desktop-${movie.id}`;
+  deleteBtn.name = `delete-desktop-${movie.id}`;
   deleteBtn.addEventListener("click", () => {
-    tr.classList.add("fade-out");
-    setTimeout(() => {
-      fetch(`/api/movies/${movie.id}`, {
-        method: "DELETE",
-      }).then(() => loadMovies(languageManager));
-    }, 500);
+    openDeleteModal(movie.id);
   });
-
   removeTd.appendChild(deleteBtn);
 
   tr.append(
@@ -203,6 +153,5 @@ export function createTableRow(movie, lang, languageManager, loadMovies) {
     ratingTd,
     removeTd
   );
-
   return tr;
 }

@@ -1,5 +1,3 @@
-// main.js – main entry point that connects all modules
-
 import { texts, LanguageManager } from "./language.js";
 import { setupSearch } from "./search.js";
 import { setupManualAdd } from "./manualAdd.js";
@@ -16,15 +14,17 @@ import {
   rerenderCachedMovies,
 } from "./movieList.js";
 
-// create the language manager
-const languageManager = new LanguageManager();
+import { setupConfirmDelete, updateModalLanguage } from "./modalHandler.js"; // 🆕 Import modal
 
-// change all visible texts depending on language
+// Create the language manager
+export const languageManager = new LanguageManager();
+
+// Apply current language to all visible elements
 function applyLanguage() {
   const lang = languageManager.getCurrent();
   const t = texts[lang];
 
-  // update page titles and input placeholders
+  // Update page titles and input placeholders
   document.title = t.title;
   document.getElementById("pageTitle").textContent = t.title;
   document.getElementById("searchQuery").placeholder = t.searchPlaceholder;
@@ -44,26 +44,23 @@ function applyLanguage() {
   sortSelect.options[3].text = t.sortAZ;
   sortSelect.options[4].text = t.sortZA;
 
-  // update stats section
+  // Update stats section
   updateStats(lastWatched, lastUnwatched, lastFavorites, lastTotalMovies, lang);
 
-  // update all "Remove" buttons currently visible
-  const removeBtns = document.querySelectorAll("#movieList .btn-danger");
-  removeBtns.forEach((btn) => {
-    btn.textContent = texts[lang].removeBtn;
-  });
+  // Update modal texts 🔥
+  updateModalLanguage(lang);
 
-  // rerender movie list from cache to update date format
+  // Rerender movie list from cache to update date format
   rerenderCachedMovies(languageManager);
 
-  // if there any active search query rerun TMDB search in new language
+  // If any active TMDB search, rerun it
   const currentQuery = document.getElementById("searchQuery").value.trim();
   if (currentQuery) {
     document.getElementById("searchBtn").click();
   }
 }
 
-// setup filtering logic (watched/unwatched/all)
+// Setup filtering logic (watched/unwatched/all)
 function setupFilterButtons() {
   document.getElementById("watchedCount").addEventListener("click", () => {
     setCurrentFilter("watched");
@@ -85,14 +82,13 @@ function setupFilterButtons() {
     loadMovies(languageManager);
   });
 
-  // 🔽 sort
   document.getElementById("sortSelect").addEventListener("change", (e) => {
     setCurrentSort(e.target.value);
     loadMovies(languageManager);
   });
 }
 
-// setup language toggle button
+// Setup language toggle button
 function setupLanguageSwitch() {
   document.getElementById("langToggle").addEventListener("click", () => {
     languageManager.toggle();
@@ -100,7 +96,6 @@ function setupLanguageSwitch() {
   });
 
   const localSearch = document.getElementById("localSearch");
-
   if (localSearch) {
     localSearch.addEventListener("input", (e) => {
       setLocalSearch(e.target.value);
@@ -109,10 +104,11 @@ function setupLanguageSwitch() {
   }
 }
 
-// run everything on page load
+// Run everything when page loads
 setupSearch(languageManager);
 setupManualAdd(languageManager);
 setupFilterButtons();
 setupLanguageSwitch();
+setupConfirmDelete(loadMovies, languageManager); // 🆕 Setup confirm delete button logic
 applyLanguage();
 loadMovies(languageManager);
