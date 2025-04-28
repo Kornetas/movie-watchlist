@@ -1,8 +1,37 @@
 // manualAdd.js – handles adding movies by typing title manually
-
 import { texts } from "./language.js";
 import { showMessage } from "./utils.js";
-import { loadMovies } from "./movieList.js";
+import { loadMovies, getCachedMovies } from "./movieList.js";
+
+// Normalize title and extract year
+function normalizeTitleAndYear(title) {
+  const yearMatch = title.match(/\((\d{4})\)$/);
+  const year = yearMatch ? parseInt(yearMatch[1]) : null;
+  const cleanTitle = yearMatch
+    ? title.replace(/\s*\(\d{4}\)$/, "").trim()
+    : title.trim();
+  return { cleanTitle: cleanTitle.toLowerCase(), year };
+}
+
+// Check if movie already exists
+function titleAlreadyExists(inputTitle, allMovies) {
+  const input = normalizeTitleAndYear(inputTitle);
+
+  return allMovies.some((movie) => {
+    if (!movie.title) return false;
+    const existing = normalizeTitleAndYear(movie.title);
+
+    if (input.cleanTitle === existing.cleanTitle) {
+      if (input.year && existing.year) {
+        return input.year === existing.year; // Same title and year -> block
+      }
+      if (!input.year && !existing.year) {
+        return true; // Same title without year -> block
+      }
+    }
+    return false;
+  });
+}
 
 export function setupManualAdd(languageManager) {
   const addBtn = document.getElementById("addManualBtn");
@@ -17,11 +46,17 @@ export function setupManualAdd(languageManager) {
 
   clearManualBtn.addEventListener("click", clearManualInput);
 
-  addBtn.addEventListener("click", () => {
+  addBtn.addEventListener("click", async () => {
     const title = titleInput.value.trim();
     const lang = languageManager.getCurrent();
     if (!title) {
       showMessage(texts[lang].emptyManual, "warning");
+      return;
+    }
+
+    const allMovies = await getCachedMovies();
+    if (titleAlreadyExists(title, allMovies)) {
+      showMessage(texts[lang].duplicateMovie, "warning");
       return;
     }
 
@@ -36,12 +71,8 @@ export function setupManualAdd(languageManager) {
         titleInput.value = "";
       })
       .catch((err) => {
-        if (err.message === "409") {
-          showMessage(texts[lang].duplicateMovie, "warning");
-        } else {
-          showMessage(texts[lang].errorAdd, "danger");
-          console.error("Manual add error:", err);
-        }
+        showMessage(texts[lang].errorAdd, "danger");
+        console.error("Manual add error:", err);
       });
   });
 

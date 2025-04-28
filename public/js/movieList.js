@@ -9,6 +9,8 @@ export let lastFavorites = 0;
 export let lastTotalMovies = 0;
 let lastLocalSearch = ""; // local search query
 
+let cachedMovies = [];
+
 export function setCurrentFilter(value) {
   currentFilter = value;
 }
@@ -55,6 +57,7 @@ export function loadMovies(languageManager) {
   fetch("/api/movies")
     .then((res) => res.json())
     .then((movies) => {
+      cachedMovies = movies;
       localStorage.setItem("cachedMovies", JSON.stringify(movies));
       renderMovieList(
         movies,
@@ -71,6 +74,7 @@ export function loadMovies(languageManager) {
       const cached = localStorage.getItem("cachedMovies");
       if (cached) {
         const movies = JSON.parse(cached);
+        cachedMovies = movies;
         renderMovieList(
           movies,
           languageManager.getCurrent(),
@@ -96,6 +100,7 @@ export function rerenderCachedMovies(languageManager) {
         movie.added_at = new Date(movie.added_at);
       }
     });
+    cachedMovies = movies;
     renderMovieList(
       movies,
       languageManager.getCurrent(),
@@ -106,4 +111,8 @@ export function rerenderCachedMovies(languageManager) {
       lastLocalSearch || ""
     );
   }
+}
+
+export function getCachedMovies() {
+  return cachedMovies;
 }

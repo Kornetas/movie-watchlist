@@ -1,25 +1,42 @@
 import { texts } from "./language.js";
+import { loadMovies, getCachedMovies } from "./movieList.js";
 import { showMessage } from "./utils.js";
-import { loadMovies } from "./movieList.js";
 
-// utility function: debounce
-function debounce(func, delay) {
-  let timeout;
-  return (...args) => {
-    clearTimeout(timeout);
-    timeout = setTimeout(() => {
-      func(...args);
-    }, delay);
-  };
+function normalizeTitleAndYear(title) {
+  const yearMatch = title.match(/\((\d{4})\)$/);
+  const year = yearMatch ? parseInt(yearMatch[1]) : null;
+  const cleanTitle = yearMatch
+    ? title.replace(/\s*\(\d{4}\)$/, "").trim()
+    : title.trim();
+  return { cleanTitle: cleanTitle.toLowerCase(), year };
 }
 
-// main function
+function titleAlreadyExists(inputTitle, allMovies) {
+  const input = normalizeTitleAndYear(inputTitle);
+
+  return allMovies.some((movie) => {
+    if (!movie.title) return false;
+    const existing = normalizeTitleAndYear(movie.title);
+
+    if (input.cleanTitle === existing.cleanTitle) {
+      if (input.year && existing.year) {
+        return input.year === existing.year;
+      }
+      if (!input.year && !existing.year) {
+        return true;
+      }
+    }
+    return false;
+  });
+}
+
 export function setupSearch(languageManager) {
   const searchQuery = document.getElementById("searchQuery");
   const resultsList = document.getElementById("searchResults");
+  const searchBtn = document.getElementById("searchBtn");
   const clearBtn = document.getElementById("clearSearchBtn");
 
-  const performSearch = () => {
+  const performSearch = async () => {
     const query = searchQuery.value.trim();
     if (query.length < 2) {
       resultsList.innerHTML = "";
@@ -30,8 +47,10 @@ export function setupSearch(languageManager) {
 
     fetch(`/api/search?query=${encodeURIComponent(query)}&lang=${lang}`)
       .then((res) => res.json())
-      .then((results) => {
+      .then(async (results) => {
         resultsList.innerHTML = "";
+
+        const allMovies = await getCachedMovies();
 
         results.forEach((movie) => {
           const li = document.createElement("li");
@@ -58,15 +77,28 @@ export function setupSearch(languageManager) {
           addBtn.textContent = texts[languageManager.getCurrent()].addBtn;
 
           addBtn.onclick = () => {
+            const movieTitleWithYear = movie.release_date
+              ? `${movie.title} (${movie.release_date.substring(0, 4)})`
+              : movie.title;
+
+            if (titleAlreadyExists(movieTitleWithYear, allMovies)) {
+              showMessage(
+                texts[languageManager.getCurrent()].duplicateMovie,
+                "warning"
+              );
+              return;
+            }
+
             const payload = {
-              title: movie.title,
+              title: movieTitleWithYear,
               poster: movie.poster,
               tmdb_link: movie.id
                 ? `https://www.themoviedb.org/movie/${movie.id}`
                 : null,
+              release_year: movie.release_date
+                ? parseInt(movie.release_date.substring(0, 4))
+                : null,
             };
-
-            console.log("🎥 Movie object:", movie);
 
             fetch("/api/movies", {
               method: "POST",
@@ -80,13 +112,11 @@ export function setupSearch(languageManager) {
                 searchQuery.value = "";
               })
               .catch((err) => {
-                const t = texts[languageManager.getCurrent()];
-                if (err.message === "409") {
-                  showMessage(t.duplicateMovie, "warning");
-                } else {
-                  showMessage(t.errorAdd, "danger");
-                  console.error("Error adding movie:", err);
-                }
+                showMessage(
+                  texts[languageManager.getCurrent()].errorAdd,
+                  "danger"
+                );
+                console.error("Error adding movie:", err);
               });
           };
 
@@ -98,13 +128,9 @@ export function setupSearch(languageManager) {
       });
   };
 
-  // debounce applied here:
   const debouncedSearch = debounce(performSearch, 300);
-
-  // real time search on input
   searchQuery.addEventListener("input", debouncedSearch);
 
-  // Click on search button, also triggers search
   searchBtn.addEventListener("click", () => {
     const query = searchQuery.value.trim();
     if (!query) {
@@ -119,4 +145,12 @@ export function setupSearch(languageManager) {
     resultsList.innerHTML = "";
     showMessage(texts[languageManager.getCurrent()].searchCleared, "info");
   });
+}
+
+function debounce(fn, delay) {
+  let timeout;
+  return (...args) => {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => fn(...args), delay);
+  };
 }

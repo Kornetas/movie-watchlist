@@ -2,144 +2,7 @@ body {
   background-color: #fdf7f0 !important;
 }
 
-/* Responsive layout for mobile */
-
-@media (max-width: 576px) {
-  /* Each movie list item (li) becomes vertical */
-  #movieList li {
-    flex-direction: column;
-    align-items: stretch;
-    text-align: center;
-    padding: 1rem 0.5rem;
-  }
-
-  /* Movie poster - 100% width on mobile */
-  #movieList img {
-    width: 100%;
-    height: auto;
-    margin-bottom: 1rem;
-    border-radius: 8px;
-  }
-
-  /* Title and date section */
-  #movieList div.d-flex.flex-column {
-    margin-bottom: 1rem;
-  }
-
-  /* Favorite button and Remove button */
-  .favorite-btn,
-  .btn-danger {
-    width: 100%;
-    margin-top: 0.5rem;
-    font-size: 1.2rem;
-  }
-
-  /* Rating stars */
-  .rating {
-    width: 100%;
-    margin-top: 0.5rem;
-    font-size: 1.5rem;
-    display: flex;
-    justify-content: center;
-  }
-
-  /* Textarea for notes */
-  textarea.form-control {
-    width: 100%;
-    margin-top: 0.5rem;
-    min-height: 70px;
-    font-size: 1rem;
-  }
-
-  /* Checkbox watched */
-  .form-check-input {
-    margin-bottom: 0.5rem;
-  }
-}
-
-/* Small additional tweaks */
-
-/* Buttons hover */
-.favorite-btn:hover,
-.btn-danger:hover {
-  opacity: 0.8;
-}
-
-/* TMDB link styling */
-#movieList a {
-  word-break: break-word;
-}
-
-#localSearch {
-  min-width: 180px;
-  max-width: 220px;
-}
-
-#movieList li {
-  gap: 1rem;
-  flex-wrap: wrap;
-}
-
-.rating {
-  display: flex;
-  align-items: center;
-  gap: 2px;
-}
-
-textarea.form-control.mt-2 {
-  margin-top: 0.5rem;
-  min-width: 100%;
-}
-
-.favorite-btn {
-  background: transparent;
-  border: none;
-  font-size: 1.2rem;
-  padding: 0;
-}
-
-#favoriteFilter.active,
-.favorite-btn.active {
-  color: #dc3545;
-}
-
-#langToggle {
-  padding: 0.375rem 0.75rem;
-  font-size: 0.875rem;
-  font-weight: 500;
-  border: 1px solid #6c757d;
-  border-radius: 0.375rem;
-  color: #212529;
-  background-color: white;
-  transition: background-color 0.2s, color 0.2s;
-}
-
-#langToggle:hover {
-  background-color: #0d6efd;
-  color: white;
-  border-color: #0d6efd;
-}
-
-#languageLabel {
-  font-size: 0.875rem;
-  font-weight: bold;
-  color: #212529;
-}
-
-input::placeholder,
-textarea::placeholder,
-input.form-control::placeholder,
-textarea.form-control::placeholder {
-  color: #212529 !important;
-  opacity: 1 !important;
-}
-
-input,
-textarea,
-input.form-control,
-textarea.form-control {
-  color: #212529 !important;
-}
+/* --- Topbar --- */
 #topbar {
   background-color: #f8f9fa;
   height: 42px;
@@ -157,16 +20,223 @@ textarea.form-control {
   font-size: 0.8rem;
 }
 
-#movieList {
-  background-color: #ffffff97;
-  padding: 1rem;
-  border-radius: 8px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+/* --- Standard Table --- */
+.table-responsive {
+  max-height: 70vh;
+  overflow-y: auto;
 }
-#movieList li {
-  background-color: #2faf97ba;
+
+#movieTableHeader th {
+  background-color: #acbccc;
+  font-weight: bold;
+  text-transform: uppercase;
+  font-size: 0.9rem;
+  color: #023975;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  border-bottom: 2px solid #dee2e6;
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+  letter-spacing: 0.5px;
+}
+
+/* --- Movie Card (Mobile) --- */
+#movieCards .movie-card {
+  background-color: #ffffff;
+  border: 1px solid #dee2e6;
   border-radius: 8px;
   padding: 1rem;
   margin-bottom: 1rem;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.movie-card img {
+  width: 100%;
+  max-height: 220px;
+  object-fit: cover;
+  border-radius: 6px;
+  margin-bottom: 0.75rem;
+}
+
+.movie-card h5 {
+  font-weight: bold;
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+}
+
+.movie-card small {
+  color: #6c757d;
+  font-size: 0.85rem;
+  font-weight: bold;
+}
+
+.movie-card textarea {
+  width: 100%;
+  resize: vertical;
+  min-height: 60px;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+  font-weight: 600;
+  border-width: 2px;
+}
+
+/* Stars in cards */
+.movie-card .rating {
+  font-size: 1.3rem;
+  text-align: center;
+}
+
+/* Heart button on mobile */
+.movie-card .btn-light {
+  font-size: 1.6rem;
+  opacity: 0.8;
+  transition: all 0.3s;
+}
+.movie-card .btn-light:hover {
+  opacity: 1;
+}
+
+/* Buttons mobile */
+.movie-card .btn {
+  margin-right: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+@media (min-width: 768px) {
+  #movieCards {
+    display: none !important;
+  }
+
+  /* --- (PC) --- */
+
+  /* Poster */
+  #movieTableHeader th:nth-child(1),
+  #movieList td:nth-child(1) {
+    width: 120px;
+    min-width: 120px;
+    max-width: 120px;
+  }
+
+  /* Title */
+  #movieTableHeader th:nth-child(2),
+  #movieList td:nth-child(2) {
+    width: 240px;
+    min-width: 240px;
+    max-width: 240px;
+  }
+
+  /* Date */
+  #movieTableHeader th:nth-child(3),
+  #movieList td:nth-child(3) {
+    width: 110px;
+    min-width: 110px;
+    max-width: 110px;
+  }
+
+  /* TMDB */
+  #movieTableHeader th:nth-child(4),
+  #movieList td:nth-child(4) {
+    width: 100px;
+    min-width: 100px;
+    max-width: 100px;
+  }
+
+  /* Note */
+  #movieTableHeader th:nth-child(5),
+  #movieList td:nth-child(5) {
+    width: 230px;
+    min-width: 230px;
+    max-width: 230px;
+  }
+
+  /* Watched */
+  #movieTableHeader th:nth-child(6),
+  #movieList td:nth-child(6) {
+    width: 110px;
+    min-width: 110px;
+    max-width: 110px;
+  }
+
+  /* Favorite */
+  #movieTableHeader th:nth-child(7),
+  #movieList td:nth-child(7) {
+    width: 100px;
+    min-width: 100px;
+    max-width: 100px;
+  }
+
+  /* Rate */
+  #movieTableHeader th:nth-child(8),
+  #movieList td:nth-child(8) {
+    width: 170px;
+    min-width: 170px;
+    max-width: 170px;
+  }
+
+  /* Delete */
+  #movieTableHeader th:nth-child(9),
+  #movieList td:nth-child(9) {
+    width: 90px;
+    min-width: 90px;
+    max-width: 90px;
+  }
+}
+
+/* --- On the Phone (Mobile) --- */
+@media (max-width: 767px) {
+  .table-responsive {
+    display: none !important;
+  }
+
+  /* Buttons and inputs full width */
+  #searchQuery,
+  #manualTitle,
+  #localSearch,
+  #sortSelect {
+    width: 100%;
+  }
+
+  /* Center for stars and hearts */
+  .movie-card .rating {
+    text-align: center;
+  }
+}
+
+/* --- Inputs and Control Button --- */
+#searchQuery,
+#manualTitle {
+  min-width: 200px;
+  max-width: 300px;
+  flex-grow: 1;
+}
+
+#searchBtn,
+#clearSearchBtn,
+#addManualBtn,
+#clearManualBtn {
+  min-width: 80px;
+  max-width: 100px;
+  white-space: nowrap;
+}
+
+#localSearch {
+  min-width: 220px;
+  max-width: 220px;
+}
+
+#sortSelect {
+  min-width: 160px;
+  max-width: 160px;
+}
+
+/* --- Filter buttons --- */
+#totalCount,
+#watchedCount,
+#unwatchedCount,
+#favoriteFilter {
+  min-width: 140px;
+  max-width: 160px;
+  text-align: center;
+  white-space: nowrap;
 }

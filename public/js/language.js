@@ -25,7 +25,25 @@ export const texts = {
     sortAZ: "A → Z",
     sortZA: "Z → A",
     localSearchPlaceholder: "Szukaj filmów...",
+
+    // New for table headers
+    headerPoster: "Miniaturka",
+    headerTitle: "Tytuł",
+    headerDate: "Data",
+    headerTmdb: "TMDB",
+    headerNote: "Notatka",
+    headerWatched: "Obejrzane",
+    headerFavorite: "Ulubione",
+    headerRating: "Ocena",
+    headerRemove: "Usuń",
+
+    // NEW ONLY FOR MOBILE
+    watchedMobileBtn: "✔️ Obejrzane",
+    unwatchedMobileBtn: "❌ Obejrzane",
+    notePlaceholderMobile: "Dodaj notatkę...",
+    removeBtnMobile: "Usuń",
   },
+
   en: {
     title: "Movie Watchlist",
     searchPlaceholder: "Search TMDB for a movie",
@@ -51,6 +69,23 @@ export const texts = {
     sortAZ: "A → Z",
     sortZA: "Z → A",
     localSearchPlaceholder: "Search movies...",
+
+    // New for table headers
+    headerPoster: "Poster",
+    headerTitle: "Title",
+    headerDate: "Date",
+    headerTmdb: "TMDB",
+    headerNote: "Note",
+    headerWatched: "Watched",
+    headerFavorite: "Favorite",
+    headerRating: "Rating",
+    headerRemove: "Remove",
+
+    // 🆕 NEW ONLY FOR MOBILE
+    watchedMobileBtn: "✔️ Watched",
+    unwatchedMobileBtn: "❌ Watch",
+    notePlaceholderMobile: "Add a note...",
+    removeBtnMobile: "Remove",
   },
 };
 
