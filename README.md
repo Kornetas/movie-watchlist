@@ -14,6 +14,8 @@ A simple and fast movie watchlist app using **Express**, **SQLite**, and the **T
   <img src="public/img/screenshot_mobile.png" alt="Mobile Preview" width="400">
 </p>
 
+---
+
 ## 📌 Project Description
 
 A modern **movie watchlist** app built using **vanilla JavaScript**, **Node.js**, and **SQLite**.  
