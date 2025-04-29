@@ -6,8 +6,14 @@ A simple and fast movie watchlist app using **Express**, **SQLite**, and the **T
 
 ## 📸 Application preview
 
-![Podgląd aplikacji](screenshot_desktop.png)
-![Podgląd aplikacji](screenshot_mobile.png)
+![Application preview](screenshot_desktop.png)
+
+---
+
+<p align="center">
+  <img src="screenshot_mobile.png" alt="Application preview" width="700">
+</p>
+
 
 ## 📌 Project Description
 
