@@ -1,4 +1,4 @@
-// all texts in both languages
+// Texts used in the app (both Polish and English)
 export const texts = {
   pl: {
     title: "Lista Filmów",
@@ -26,7 +26,7 @@ export const texts = {
     sortZA: "Z → A",
     localSearchPlaceholder: "Szukaj filmów...",
 
-    // New for table headers
+    // Table headers
     headerPoster: "Miniaturka",
     headerTitle: "Tytuł",
     headerDate: "Data",
@@ -37,13 +37,13 @@ export const texts = {
     headerRating: "Ocena",
     headerRemove: "Usuń",
 
-    // NEW ONLY FOR MOBILE
+    // Mobile-specific texts
     watchedMobileBtn: "✔️ Obejrzane",
     unwatchedMobileBtn: "❌ Obejrzane",
     notePlaceholderMobile: "Dodaj notatkę...",
     removeBtnMobile: "Usuń",
 
-    // 🆕 Nowe dla modala
+    // Modal texts
     confirmDeleteTitle: "Potwierdź usunięcie",
     confirmDeleteMessage: "Czy na pewno chcesz usunąć ten film?",
     confirmDeleteBtn: "Usuń",
@@ -76,7 +76,7 @@ export const texts = {
     sortZA: "Z → A",
     localSearchPlaceholder: "Search movies...",
 
-    // New for table headers
+    // Table headers
     headerPoster: "Poster",
     headerTitle: "Title",
     headerDate: "Date",
@@ -87,13 +87,13 @@ export const texts = {
     headerRating: "Rating",
     headerRemove: "Remove",
 
-    // 🆕 NEW ONLY FOR MOBILE
+    // Mobile-specific texts
     watchedMobileBtn: "✔️ Watched",
     unwatchedMobileBtn: "❌ Watch",
     notePlaceholderMobile: "Add a note...",
     removeBtnMobile: "Remove",
 
-    // 🆕 Nowe dla modala
+    // Modal texts
     confirmDeleteTitle: "Confirm Deletion",
     confirmDeleteMessage: "Are you sure you want to delete this movie?",
     confirmDeleteBtn: "Delete",
@@ -101,20 +101,20 @@ export const texts = {
   },
 };
 
-// simple class to manage language setting
+// Class to manage the selected language
 export class LanguageManager {
   constructor() {
-    // get saved lang from localStorage, or use "pl" by default
+    // Load language from localStorage or use "pl" if not set
     this.lang = localStorage.getItem("lang") || "pl";
   }
 
-  // switch between "pl" and "en"
+  // Switch between Polish and English
   toggle() {
     this.lang = this.lang === "pl" ? "en" : "pl";
     localStorage.setItem("lang", this.lang);
   }
 
-  // return current language
+  // Return the currently selected language
   getCurrent() {
     return this.lang;
   }

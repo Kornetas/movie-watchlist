@@ -1,4 +1,4 @@
-// Filter movies by watched, favorite, search text
+// Filter movies based on current filter and search query
 export function filterMovies(movies, currentFilter, lastLocalSearch) {
   return movies.filter((movie) => {
     const matchesFilter =
@@ -7,11 +7,13 @@ export function filterMovies(movies, currentFilter, lastLocalSearch) {
       (currentFilter === "favorite" && movie.favorite) ||
       currentFilter === "all";
 
+    // Convert search text to lowercase
     const searchText = (lastLocalSearch || "").toLowerCase();
     const title = movie.title || "";
     const titlePl = movie.title_pl || "";
     const titleEn = movie.title_en || "";
 
+    // Check if search text is found in any title
     const matchesSearch =
       !lastLocalSearch ||
       title.toLowerCase().includes(searchText) ||
@@ -22,7 +24,7 @@ export function filterMovies(movies, currentFilter, lastLocalSearch) {
   });
 }
 
-// Sort movies by title or date
+// Sort movies depending on selected sort option
 export function sortMovies(movies, currentSort) {
   if (currentSort) {
     movies.sort((a, b) => {

@@ -14,11 +14,11 @@ export function renderMovieList(
   currentSort,
   lastLocalSearch
 ) {
-  const list = document.getElementById("movieList");
-  const cards = document.getElementById("movieCards");
-  const table = document.querySelector("table");
+  const list = document.getElementById("movieList"); // tbody for desktop
+  const cards = document.getElementById("movieCards"); // div for mobile
+  const table = document.querySelector("table"); // the main table
 
-  // Clear previous content
+  // Clear old data before rendering new
   list.innerHTML = "";
   cards.innerHTML = "";
 
@@ -28,18 +28,18 @@ export function renderMovieList(
   const newThead = createTableHeader(lang);
   table.insertBefore(newThead, table.firstChild);
 
-  // Prepare data
-  parseMovieDates(movies);
-  const filtered = filterMovies(movies, currentFilter, lastLocalSearch);
-  sortMovies(filtered, currentSort);
+  // Prepare data: fix dates, filter, sort
+  parseMovieDates(movies); // make sure dates are Date objects
+  const filtered = filterMovies(movies, currentFilter, lastLocalSearch); // filter by watched/favorite/search
+  sortMovies(filtered, currentSort); // sort by selected sort option
 
-  // Add each movie to list
+  // Add each movie to table and mobile cards
   filtered.forEach((movie) => {
     const tr = createTableRow(movie, lang, languageManager, loadMovies);
     const card = createMovieCard(movie, lang, languageManager, loadMovies);
 
-    list.appendChild(tr);
-    cards.appendChild(card);
+    list.appendChild(tr); // add row to table
+    cards.appendChild(card); // add card to mobile
   });
 
   // Update counters (Watched, Unwatched, Favorites, All)

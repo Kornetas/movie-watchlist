@@ -2,7 +2,7 @@ import { texts } from "./language.js";
 
 let movieToDelete = null;
 
-// Function to open the modal and store movie ID
+// Open delete confirmation modal and store which movie should be deleted
 export function openDeleteModal(movieId) {
   movieToDelete = movieId;
   const modal = new bootstrap.Modal(
@@ -11,7 +11,7 @@ export function openDeleteModal(movieId) {
   modal.show();
 }
 
-// Function to update modal texts based on current language
+// Change texts inside modal when switching language
 export function updateModalLanguage(lang) {
   const title = document.getElementById("deleteConfirmLabel");
   const message = document.getElementById("deleteConfirmMessage");
@@ -24,20 +24,22 @@ export function updateModalLanguage(lang) {
   cancelBtn.textContent = texts[lang].cancelDeleteBtn;
 }
 
-// Function to handle the delete confirmation
+// Setup what happens when user clicks "Confirm Delete"
 export function setupConfirmDelete(loadMovies, languageManager) {
   const confirmBtn = document.getElementById("confirmDeleteBtn");
 
   confirmBtn.addEventListener("click", () => {
-    confirmBtn.blur(); // 🆕 BLUR button to prevent ARIA warning!
+    confirmBtn.blur(); // remove focus to avoid accessibility warning
 
     if (movieToDelete) {
+      // Send DELETE request to backend
       fetch(`/api/movies/${movieToDelete}`, {
         method: "DELETE",
       }).then(() => {
-        movieToDelete = null;
-        loadMovies(languageManager);
+        movieToDelete = null; // clear the saved ID
+        loadMovies(languageManager); // reload movies list after delete
 
+        // Hide the modal after deletion
         const modalElement = document.getElementById("deleteConfirmModal");
         const modalInstance = bootstrap.Modal.getInstance(modalElement);
         if (modalInstance) {

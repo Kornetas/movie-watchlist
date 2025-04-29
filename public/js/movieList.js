@@ -22,12 +22,12 @@ export function setCurrentSort(value) {
   currentSort = value;
 }
 
-// Update local search query
+// Update search text for local filter
 export function setLocalSearch(value) {
   lastLocalSearch = value.toLowerCase();
 }
 
-// Update the stats counters
+// Update movie counters (watched, unwatched, etc.)
 export function updateStats(watched, unwatched, favorites, totalMovies, lang) {
   const t = texts[lang];
 
@@ -57,27 +57,29 @@ export function loadMovies(languageManager) {
     return;
   }
 
+  // First try to fetch movies from server
   fetch("/api/movies")
-    .then((res) => res.json())
+    .then((res) => res.json()) // Parse response as JSON
     .then((movies) => {
-      cachedMovies = movies;
-      localStorage.setItem("cachedMovies", JSON.stringify(movies));
-      renderMovies(movies, languageManager);
+      cachedMovies = movies; // Save movies to memory
+      localStorage.setItem("cachedMovies", JSON.stringify(movies)); // Also save movies to localStorage
+      renderMovies(movies, languageManager); // Render movies on the page
     })
     .catch(() => {
+      // If fetch failed (server offline?)
       console.warn("Backend not available. Using cache.");
       const cached = localStorage.getItem("cachedMovies");
       if (cached) {
-        const movies = JSON.parse(cached);
-        cachedMovies = movies;
-        renderMovies(movies, languageManager);
+        const movies = JSON.parse(cached); // Load movies from localStorage
+        cachedMovies = movies; // Save to memory
+        renderMovies(movies, languageManager); // Render movies on the page
       } else {
-        console.error("No movie data available.");
+        console.error("No movie data available."); // No movies found anywhere
       }
     });
 }
 
-// Re-render cached movies (when language is changed)
+// Reload cached movies (example: after language change)
 export function rerenderCachedMovies(languageManager) {
   const cached = localStorage.getItem("cachedMovies");
   if (cached) {
@@ -99,6 +101,7 @@ function renderMovies(movies, languageManager) {
   const movieList = document.getElementById("movieList");
   const movieCards = document.getElementById("movieCards");
 
+  // Clear previous content
   movieList.innerHTML = "";
   movieCards.innerHTML = "";
 
@@ -130,7 +133,7 @@ function renderMovies(movies, languageManager) {
   newThead.appendChild(headerRow);
   table.insertBefore(newThead, table.firstChild);
 
-  // Apply filters
+  // Filter movies by current filter + local search
   let filtered = movies.filter((movie) => {
     const matchesFilter =
       (currentFilter === "watched" && movie.watched) ||
@@ -146,7 +149,7 @@ function renderMovies(movies, languageManager) {
     return matchesFilter && matchesSearch;
   });
 
-  // Apply sorting
+  // Sort movies
   if (currentSort === "newest") {
     filtered.sort((a, b) => new Date(b.added_at) - new Date(a.added_at));
   } else if (currentSort === "oldest") {
@@ -157,7 +160,7 @@ function renderMovies(movies, languageManager) {
     filtered.sort((a, b) => (b.title || "").localeCompare(a.title || ""));
   }
 
-  // Render each movie
+  // Render each movie (both desktop and mobile)
   filtered.forEach((movie) => {
     const tr = createTableRow(movie, lang);
     const card = createMovieCard(movie, lang);
@@ -165,7 +168,7 @@ function renderMovies(movies, languageManager) {
     movieCards.appendChild(card);
   });
 
-  // Update stats
+  // Update counters
   updateStats(
     movies.filter((m) => m.watched).length,
     movies.filter((m) => !m.watched).length,
@@ -175,7 +178,7 @@ function renderMovies(movies, languageManager) {
   );
 }
 
-// Return cached movies
+// Return movies from cache
 export function getCachedMovies() {
   return cachedMovies;
 }

@@ -2,6 +2,7 @@ import { texts } from "./language.js";
 import { loadMovies, getCachedMovies } from "./movieList.js";
 import { showMessage } from "./utils.js";
 
+// Get clean title and release year if available
 function normalizeTitleAndYear(title) {
   const yearMatch = title.match(/\((\d{4})\)$/);
   const year = yearMatch ? parseInt(yearMatch[1]) : null;
@@ -11,6 +12,7 @@ function normalizeTitleAndYear(title) {
   return { cleanTitle: cleanTitle.toLowerCase(), year };
 }
 
+// Check if movie already exists in the list
 function titleAlreadyExists(inputTitle, allMovies) {
   const input = normalizeTitleAndYear(inputTitle);
 
@@ -20,26 +22,28 @@ function titleAlreadyExists(inputTitle, allMovies) {
 
     if (input.cleanTitle === existing.cleanTitle) {
       if (input.year && existing.year) {
-        return input.year === existing.year;
+        return input.year === existing.year; // Same title and same year
       }
       if (!input.year && !existing.year) {
-        return true;
+        return true; // Same title without year
       }
     }
     return false;
   });
 }
 
+// Setup TMDB search logic
 export function setupSearch(languageManager) {
   const searchQuery = document.getElementById("searchQuery");
   const resultsList = document.getElementById("searchResults");
   const searchBtn = document.getElementById("searchBtn");
   const clearBtn = document.getElementById("clearSearchBtn");
 
+  // Search movies from backend TMDB API
   const performSearch = async () => {
     const query = searchQuery.value.trim();
     if (query.length < 2) {
-      resultsList.innerHTML = "";
+      resultsList.innerHTML = ""; // Too short -> clear results
       return;
     }
 
@@ -50,12 +54,13 @@ export function setupSearch(languageManager) {
       .then(async (results) => {
         resultsList.innerHTML = "";
 
-        const allMovies = await getCachedMovies();
+        const allMovies = await getCachedMovies(); // Get local movies for checking duplicates
 
         results.forEach((movie) => {
           const li = document.createElement("li");
           li.className = "list-group-item d-flex align-items-center";
 
+          // Movie poster
           const img = document.createElement("img");
           img.src = movie.poster
             ? `https://image.tmdb.org/t/p/w154${movie.poster}`
@@ -67,20 +72,24 @@ export function setupSearch(languageManager) {
           img.style.objectFit = "cover";
           img.style.borderRadius = "4px";
 
+          // Movie title and year
           const text = document.createElement("div");
           text.innerText = movie.release_date
             ? `${movie.title} (${movie.release_date.substring(0, 4)})`
             : movie.title;
 
+          // Button to add movie to the list
           const addBtn = document.createElement("button");
           addBtn.className = "btn btn-sm btn-primary ms-auto";
           addBtn.textContent = texts[languageManager.getCurrent()].addBtn;
 
+          // When clicking "Add"
           addBtn.onclick = () => {
             const movieTitleWithYear = movie.release_date
               ? `${movie.title} (${movie.release_date.substring(0, 4)})`
               : movie.title;
 
+            // Check if movie already exists
             if (titleAlreadyExists(movieTitleWithYear, allMovies)) {
               showMessage(
                 texts[languageManager.getCurrent()].duplicateMovie,
@@ -89,6 +98,7 @@ export function setupSearch(languageManager) {
               return;
             }
 
+            // Build movie data payload
             const payload = {
               title: movieTitleWithYear,
               poster: movie.poster,
@@ -100,6 +110,7 @@ export function setupSearch(languageManager) {
                 : null,
             };
 
+            // Send movie to backend
             fetch("/api/movies", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
@@ -107,9 +118,9 @@ export function setupSearch(languageManager) {
             })
               .then((res) => {
                 if (!res.ok) throw new Error(res.status.toString());
-                loadMovies(languageManager);
-                resultsList.innerHTML = "";
-                searchQuery.value = "";
+                loadMovies(languageManager); // Reload movies
+                resultsList.innerHTML = ""; // Clear search results
+                searchQuery.value = ""; // Clear search input
               })
               .catch((err) => {
                 showMessage(
@@ -120,6 +131,7 @@ export function setupSearch(languageManager) {
               });
           };
 
+          // Add elements to result list
           li.appendChild(img);
           li.appendChild(text);
           li.appendChild(addBtn);
@@ -128,9 +140,11 @@ export function setupSearch(languageManager) {
       });
   };
 
+  // Debounce typing to avoid sending too many requests
   const debouncedSearch = debounce(performSearch, 300);
   searchQuery.addEventListener("input", debouncedSearch);
 
+  // Search when clicking Search button
   searchBtn.addEventListener("click", () => {
     const query = searchQuery.value.trim();
     if (!query) {
@@ -140,6 +154,7 @@ export function setupSearch(languageManager) {
     performSearch();
   });
 
+  // Clear input and results when clicking Clear button
   clearBtn.addEventListener("click", () => {
     searchQuery.value = "";
     resultsList.innerHTML = "";
@@ -147,6 +162,7 @@ export function setupSearch(languageManager) {
   });
 }
 
+// Small helper: wait before firing search
 function debounce(fn, delay) {
   let timeout;
   return (...args) => {

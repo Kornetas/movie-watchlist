@@ -1,9 +1,8 @@
-// manualAdd.js – handles adding movies by typing title manually
 import { texts } from "./language.js";
 import { showMessage } from "./utils.js";
 import { loadMovies, getCachedMovies } from "./movieList.js";
 
-// Normalize title and extract year
+// Normalize movie title and check for year in brackets like (2020)
 function normalizeTitleAndYear(title) {
   const yearMatch = title.match(/\((\d{4})\)$/);
   const year = yearMatch ? parseInt(yearMatch[1]) : null;
@@ -13,7 +12,7 @@ function normalizeTitleAndYear(title) {
   return { cleanTitle: cleanTitle.toLowerCase(), year };
 }
 
-// Check if movie already exists
+// Check if the movie already exists in the list
 function titleAlreadyExists(inputTitle, allMovies) {
   const input = normalizeTitleAndYear(inputTitle);
 
@@ -21,31 +20,38 @@ function titleAlreadyExists(inputTitle, allMovies) {
     if (!movie.title) return false;
     const existing = normalizeTitleAndYear(movie.title);
 
+    // Same title and same year -> already exists
     if (input.cleanTitle === existing.cleanTitle) {
       if (input.year && existing.year) {
-        return input.year === existing.year; // Same title and year -> block
+        return input.year === existing.year;
       }
+
+      // Both titles don't have year, still same title -> exists
       if (!input.year && !existing.year) {
-        return true; // Same title without year -> block
+        return true;
       }
     }
     return false;
   });
 }
 
+// Setup logic for manually adding a movie (not from TMDB)
 export function setupManualAdd(languageManager) {
   const addBtn = document.getElementById("addManualBtn");
   const titleInput = document.getElementById("manualTitle");
   const clearManualBtn = document.getElementById("clearManualBtn");
 
+  // Clear input and show message
   function clearManualInput() {
     titleInput.value = "";
     const lang = languageManager.getCurrent();
     showMessage(texts[lang].manualCleared, "info");
   }
 
+  // Clear button click
   clearManualBtn.addEventListener("click", clearManualInput);
 
+  // Try to add the movie
   addBtn.addEventListener("click", async () => {
     const title = titleInput.value.trim();
     const lang = languageManager.getCurrent();
@@ -54,12 +60,14 @@ export function setupManualAdd(languageManager) {
       return;
     }
 
+    // Check duplicates
     const allMovies = await getCachedMovies();
     if (titleAlreadyExists(title, allMovies)) {
       showMessage(texts[lang].duplicateMovie, "warning");
       return;
     }
 
+    // Send movie to backend
     fetch("/api/movies", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -67,7 +75,7 @@ export function setupManualAdd(languageManager) {
     })
       .then((res) => {
         if (!res.ok) throw new Error("Failed");
-        loadMovies(languageManager);
+        loadMovies(languageManager); // Reload after adding
         titleInput.value = "";
       })
       .catch((err) => {
@@ -76,6 +84,7 @@ export function setupManualAdd(languageManager) {
       });
   });
 
+  // Allow pressing Enter to add movie
   titleInput.addEventListener("keydown", (e) => {
     if (e.key === "Enter") {
       addBtn.click();

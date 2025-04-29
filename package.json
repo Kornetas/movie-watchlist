@@ -1,14 +1,35 @@
 {
   "name": "movie-watchlist",
   "version": "1.0.0",
-  "main": "index.js",
+  "description": "Simple and fast movie watchlist app using Express, SQLite, and TMDB API.",
+  "main": "server.js",
   "scripts": {
     "start": "node server.js"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "movies",
+    "watchlist",
+    "express",
+    "sqlite",
+    "tmdb",
+    "movie database",
+    "nodejs",
+    "bootstrap",
+    "javascript",
+    "api",
+    "frontend",
+    "backend",
+    "fullstack",
+    "movie app",
+    "movie collection"
+  ],
+  "author": "Kornetas",
   "license": "ISC",
-  "description": "",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Kornetas/movie-watchlist.git"
+  },
+  "homepage": "https://github.com/Kornetas/movie-watchlist",
   "dependencies": {
     "better-sqlite3": "^11.9.1",
     "dotenv": "^16.5.0",
