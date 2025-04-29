@@ -31,18 +31,18 @@ Key features include:
 - 🔍 Local search with filtering
 - 🌐 Language toggle: **PL** / **EN**
 - 💾 Data stored in **SQLite**
-- 📱 Mobile-friendly layout (Bootstrap 5)
-
-No frontend frameworks – just **HTML**, **CSS**, and **vanilla JavaScript**.
+- 📱 Responsive design (custom CSS + Bootstrap 5 for layout)
+- ⚙️ No frontend frameworks – **HTML**, **CSS**, and **vanilla JavaScript**
 
 ---
 
 ## 🧪 Tech Stack
 
-- **Frontend**: HTML, CSS (Bootstrap), JS
-- **Backend**: Express.js
+- **Frontend**: HTML, CSS (custom + Bootstrap 5 via CDN), JavaScript (vanilla, no frameworks)
+- **Backend**: Node.js, Express.js
 - **Database**: SQLite (via `better-sqlite3`)
 - **API**: TMDB (The Movie Database)
+- **JS Interactions**: Bootstrap JS via CDN (modals etc.)
 
 ---
 
@@ -52,7 +52,6 @@ No frontend frameworks – just **HTML**, **CSS**, and **vanilla JavaScript**.
 
 ```bash
 git clone https://github.com/Kornetas/movie-watchlist.git
-cd movie-watchlist
 ```
 
 ### 2. Install dependencies
@@ -64,6 +63,8 @@ npm install
 ### 3. Set up environment variables
 
 Create a `.env` file in the root:
+
+You can obtain a free API key by signing up at https://www.themoviedb.org/
 
 ```env
 TMDB_API_KEY=your_tmdb_api_key_here
