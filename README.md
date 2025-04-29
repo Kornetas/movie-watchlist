@@ -11,7 +11,7 @@ A simple and fast movie watchlist app using **Express**, **SQLite**, and the **T
 ---
 
 <p align="center">
-  <img src="screenshot_mobile.png" alt="Application preview" width="700">
+  <img src="screenshot_mobile.png" alt="Application preview" width="400">
 </p>
 
 
